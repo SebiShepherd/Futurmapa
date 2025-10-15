@@ -46,20 +46,16 @@ body::before {
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr);
   height: 100vh;
-  backdrop-filter: blur(12px);
 }
 
 #map-container {
   position: relative;
-  overflow: hidden;
-  padding: 32px;
 }
 
 #map {
   position: absolute;
   inset: 0;
   margin: 0;
-  overflow: hidden;
 }
 
 #map svg {

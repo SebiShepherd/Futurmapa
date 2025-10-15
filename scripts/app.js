@@ -29,6 +29,18 @@
   feMerge.append("feMergeNode").attr("in", "coloredBlur");
   feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
+  const countryGlowFilter = defs
+    .append("filter")
+    .attr("id", "country-glow")
+    .attr("x", "-35%")
+    .attr("y", "-35%")
+    .attr("width", "170%")
+    .attr("height", "170%");
+  countryGlowFilter.append("feGaussianBlur").attr("stdDeviation", 6).attr("result", "glow");
+  const glowMerge = countryGlowFilter.append("feMerge");
+  glowMerge.append("feMergeNode").attr("in", "glow");
+  glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
   const clipPathPath = clipPath.append("path");
 
@@ -38,6 +50,7 @@
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
   const spherePath = mapLayer.append("path").attr("class", "map-sphere");
+  const glowLayer = mapLayer.append("g").attr("class", "map-glow");
   const countriesLayer = mapLayer.append("g");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
@@ -81,13 +94,16 @@
     clipPathPath.attr("d", geoPath(sphereData));
     spherePath.attr("d", geoPath(sphereData));
 
+    glowLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
   }
 
   function drawCountries() {
+    const glowSelection = glowLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
+    const glowEntered = glowSelection.enter().append("path").attr("class", "country-glow").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -97,8 +113,10 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
+    glowSelection.exit().remove();
     countrySelection.exit().remove();
 
+    glowSelection.merge(glowEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
   }
@@ -146,9 +164,12 @@
 
   function updateStrokeWidths() {
     countriesLayer.selectAll("path").style("stroke-width", 0.6 / Math.sqrt(currentTransform.k || 1));
+    glowLayer.selectAll("path").style("stroke-width", 1.2 / Math.sqrt(currentTransform.k || 1));
   }
 
   function updateCountryClasses() {
+    const statusByIso = new Map();
+
     countriesLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
@@ -163,6 +184,18 @@
       selection.classed("is-active", isActive);
       selection.classed("is-inactive", !isActive);
       selection.classed("is-highlighted", highlight);
+
+      statusByIso.set(iso, { isActive, highlight });
+    });
+
+    glowLayer.selectAll("path").each(function (feature) {
+      const iso = feature.id;
+      const selection = d3.select(this);
+      const status = statusByIso.get(iso) || { isActive: false, highlight: false };
+
+      selection.classed("is-active", status.isActive);
+      selection.classed("is-inactive", !status.isActive);
+      selection.classed("is-highlighted", status.highlight);
     });
   }
 

@@ -2,32 +2,63 @@
 
 Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweiter Kennzahlen.
 
-## Inhalt
+## Features
 
-* **`index.html`** – Einstiegspunkt, der die Karte, Sidebar und das Daten-Overlay lädt.
-* **`styles.css`** – Layout, Farben und Animationen (inklusive Glow-Effekt der Karte).
-* **`vendor/d3.min.js`** – Eingebettete D3-Version für Projektion, Zoom und Geometrie.
-* **`data/world-geojson.js`** – GeoJSON-Datengrundlage (als JavaScript-Konstante eingebettet).
-* **`scripts/data.js`** – Beispieldaten, Kategorien, Kontinente sowie Länder-spezifische Kennzahlen.
-* **`scripts/app.js`** – Steuerung der Interaktionen (Zoom, Tooltips, Modalfenster, Filter).
+* Maßstabsgetreue Weltkarte auf Basis von D3 und TopoJSON, inklusive Zoom- und Pan-Interaktionen.
+* Kontinent- und Länderfilter mit animierten Übergängen.
+* Detail-Overlay mit Bereichsumschalter (Group, CVS, RVS, CVS vs RVS) und Zuständen für fehlende Daten.
+* Vollständig statische Auslieferung – alle Daten und Bibliotheken liegen lokal vor.
+
+## Projektstruktur
+
+| Pfad | Beschreibung |
+| --- | --- |
+| `index.html` | Einstiegspunkt, lädt Map-Container, Sidebar, Detailpanel und Skripte. |
+| `styles.css` | Globales Styling, Farbschema und Animationen (inkl. Map-Glow). |
+| `vendor/d3.min.js` | Gebündelte D3-Version für Projektion, Zoom und Rendering. |
+| `data/world-geojson.js` | Weltkarte als JavaScript-Konstante (`WORLD_GEOJSON`). |
+| `scripts/data.js` | Beispieldaten, Kontinent- & Länder-Metadaten, Kategorien, Tooltips. |
+| `scripts/app.js` | Anwendungslogik (Initialisierung, Zoom, Tooltip, Panel-Rendering). |
 
 ## Nutzung
 
 1. Repository herunterladen oder als ZIP exportieren.
 2. Archiv entpacken.
-3. `index.html` doppelklicken oder per Drag & Drop im Browser öffnen.
+3. `index.html` im Browser (Chrome, Edge, Firefox, Safari) öffnen.
 
-Eine Backend-Infrastruktur wird nicht benötigt – sämtliche Daten liegen lokal im Projekt und können direkt im Browser verwendet werden.
+> 💡 Die Anwendung funktioniert komplett offline. Eine Backend-Infrastruktur oder Build-Pipeline ist nicht erforderlich.
 
-## Daten anpassen
+## Datenpflege
 
-* **Kontinente & Länder**: In `scripts/data.js` unter `DATA_CONFIG.continents` und `DATA_CONFIG.countries` pflegen. Jedes Land kann beliebig viele `points` (Daten-Hotspots) erhalten. Nicht aktive Länder (`active: false`) werden automatisch grau dargestellt.
-* **Kennzahlen**: Pro Punkt lassen sich Datensätze für `Group`, `CVS`, `RVS` sowie ein Vergleich `CVS vs RVS` hinterlegen. Fehlende Werte werden im Overlay als „Kein Datensatz verfügbar" markiert.
-* **Coming Soon**: Für Punkte, die vorbereitet werden, `comingSoon: true` setzen. Die Karte zeigt dann einen deaktivierten Marker samt Hinweis.
-* **Kategorien**: Farben, Icons und Beschreibungen im Objekt `DATA_CONFIG.categories` anpassen, um neue Themen aufzunehmen.
+Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelpunkt für Inhalte.
 
-Nach Änderungen an `scripts/data.js` oder den Styles genügt ein Neuladen der `index.html` im Browser.
+### Kontinente & Länder
 
-## Tests
+* `DATA_CONFIG.continents` definiert die Sidebar-Zusammenfassungen (Text, KPIs, Aktionsknöpfe).
+* `DATA_CONFIG.countries` enthält pro ISO-Ländercode Metadaten (`name`, `continent`, `active`) und eine Liste `points`.
+* Jeder `point` beschreibt einen Kartenmarker mit `category`, optionaler `description` sowie den organisationsspezifischen Datensätzen.
 
-Da die Anwendung komplett statisch ist, sind keine Build-Schritte nötig. Manuelles Testing erfolgt über einen Browser (Chrome, Edge, Firefox, Safari). Für mobile Breakpoints stehen responsive Styles zur Verfügung.
+### Kennzahlen hinterlegen
+
+* Für die Bereiche `Group`, `CVS`, `RVS` und `CVS_vs_RVS` können individuelle Inhalte (`title`, `metrics`, `visual`, `note`) gepflegt werden.
+* Fehlende Angaben werden automatisch als „Kein Datensatz verfügbar" gekennzeichnet.
+* Setze `comingSoon: true`, um Marker als in Vorbereitung zu markieren.
+
+### Kategorien erweitern
+
+* `DATA_CONFIG.categories` steuert Farben, Icons und erläuternde Texte der Legende.
+* Neue Kategorien erscheinen automatisch in Legende, Tooltip und Detailansicht.
+
+Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
+
+## Entwicklung & Testing
+
+* Für lokale Tests kann optional ein einfacher Webserver gestartet werden, z. B. `python -m http.server 8000`.
+* Responsives Layout wurde für typische Breakpoints (Desktop, Tablet, Mobile) ausgelegt.
+* Animationen und Interaktionen sind vollständig in Vanilla JS/D3 umgesetzt; es sind keine zusätzlichen Abhängigkeiten nötig.
+
+## Barrierefreiheit & Hinweise
+
+* Tastaturbedienung: Kontinente, Länder und Organisationsauswahl sind per Tab erreichbar; Escape schließt das Detailpanel.
+* WAI-ARIA: Tooltip, Radiobutton-Gruppe und Dialog verfügen über ARIA-Rollen und -Labels.
+* Bekannte Grenzen: Die GeoJSON-Datei ist bewusst hochauflösend. Bei sehr alten Geräten kann dies zu längeren Ladezeiten führen.

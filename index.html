@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Futurmapa – Interaktive Konzern-Landkarte</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="app__header">
+        <div>
+          <h1>Futurmapa</h1>
+          <p>Interaktive Insights für globale Teams</p>
+        </div>
+        <div class="app__legend">
+          <span class="legend__item legend__item--active">Aktive Länder</span>
+          <span class="legend__item legend__item--inactive">Weitere Länder</span>
+        </div>
+      </header>
+
+      <main class="app__main">
+        <section class="map-card">
+          <div class="map-card__glow"></div>
+          <div id="map" class="map"></div>
+          <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+          <div class="map-overlays">
+            <div id="breadcrumb" class="breadcrumb"></div>
+            <div id="contextPanel" class="context-panel"></div>
+          </div>
+        </section>
+
+        <aside id="infoPanel" class="info-panel" aria-hidden="true">
+          <button id="infoPanelClose" class="info-panel__close" aria-label="Details schließen">×</button>
+          <div class="info-panel__content"></div>
+        </aside>
+      </main>
+
+      <footer class="app__footer">
+        <small>Alle Daten sind Demo-Inhalte und dienen der Illustration.</small>
+      </footer>
+    </div>
+
+    <div id="businessSelector" class="business-selector" aria-hidden="true">
+      <span class="business-selector__label">Datenquelle wählen:</span>
+      <div class="business-selector__options">
+        <button data-unit="Group" class="business-selector__option">Group</button>
+        <button data-unit="CVS" class="business-selector__option">CVS</button>
+        <button data-unit="RVS" class="business-selector__option">RVS</button>
+        <button data-unit="Compare" class="business-selector__option">CVS vs. RVS</button>
+      </div>
+    </div>
+
+    <script src="assets/vendor/d3.min.js"></script>
+    <script src="assets/vendor/topojson-client.min.js"></script>
+    <script src="assets/js/app.js" type="module"></script>
+  </body>
+</html>

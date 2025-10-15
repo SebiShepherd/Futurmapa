@@ -1,0 +1,256 @@
+{
+  "regions": [
+    {
+      "id": "north-america",
+      "name": "Nordamerika",
+      "isoCodes": ["USA", "CAN", "MEX"],
+      "countries": [
+        {
+          "isoCode": "USA",
+          "name": "Vereinigte Staaten",
+          "summary": "Der US-Markt bleibt der wichtigste Wachstumstreiber des Konzerns.",
+          "markers": [
+            {
+              "id": "usa-finance",
+              "topic": "Finance",
+              "color": "#f9a33f",
+              "coordinates": [-77.0369, 38.9072],
+              "title": "Finance Update USA",
+              "description": "Aktuelle Kennzahlen aus dem Finanzbereich.",
+              "datasets": {
+                "Group": {
+                  "highlights": [
+                    "Umsatzwachstum +8 %",
+                    "EBIT-Marge stabil bei 12 %"
+                  ]
+                },
+                "CVS": {
+                  "highlights": [
+                    "Investition in neue Plattform in Austin",
+                    "Verbesserte Liquiditätsposition"
+                  ]
+                },
+                "RVS": {
+                  "highlights": [
+                    "Anstieg der Servicekosten um 3 %",
+                    "Optimierung laufender Verträge"
+                  ]
+                },
+                "Compare": {
+                  "CVS": {
+                    "highlights": ["CVS EBITDA +6 %", "Neue Cloud-Kooperation"]
+                  },
+                  "RVS": {
+                    "highlights": ["RVS EBITDA +4 %", "Modernisierung der Legacy-Systeme"]
+                  }
+                }
+              }
+            },
+            {
+              "id": "usa-hr",
+              "topic": "HR",
+              "color": "#6fcf97",
+              "coordinates": [-118.2437, 34.0522],
+              "title": "HR Snapshot USA",
+              "description": "Personalzahlen & Initiativen.",
+              "datasets": {
+                "Group": {
+                  "highlights": [
+                    "6.300 Mitarbeitende",
+                    "Neues Hybrid-Work-Programm"
+                  ]
+                },
+                "CVS": null,
+                "RVS": {
+                  "highlights": [
+                    "1.800 Mitarbeitende",
+                    "Starkes Onboarding-Programm"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "isoCode": "CAN",
+          "name": "Kanada",
+          "summary": "Kanada entwickelt sich zu einem Zentrum für Nearshore-Services.",
+          "markers": [
+            {
+              "id": "can-sales",
+              "topic": "Sales",
+              "color": "#ff6f91",
+              "coordinates": [-79.3832, 43.6532],
+              "title": "Sales Funnel Kanada",
+              "description": "Pipeline-Daten für das aktuelle Quartal.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["11 Mio. EUR Pipeline", "3 neue Großkunden"]
+                },
+                "CVS": {
+                  "highlights": ["Fokus auf Gesundheitsbranche", "Partnerschaft mit GovTech"]
+                },
+                "RVS": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "south-america",
+      "name": "Südamerika",
+      "isoCodes": ["BRA", "ARG", "CHL"],
+      "countries": [
+        {
+          "isoCode": "BRA",
+          "name": "Brasilien",
+          "summary": "Wachstumsregion mit Schwerpunkt Infrastruktur-Projekte.",
+          "markers": [
+            {
+              "id": "bra-operations",
+              "topic": "Operations",
+              "color": "#56ccf2",
+              "coordinates": [-43.1729, -22.9068],
+              "title": "Operations Hub Brasilien",
+              "description": "Statusübersicht zu Lieferketten & Projekten.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["Neue Niederlassung in Recife", "Fokus auf Nachhaltigkeit"]
+                },
+                "CVS": {
+                  "highlights": ["Pilotprojekt Smart Factory", "Zusammenarbeit mit lokalen Universitäten"]
+                },
+                "RVS": {
+                  "highlights": ["Service-Center in São Paulo", "Kundenzufriedenheit +9 %"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "europe",
+      "name": "Europa",
+      "isoCodes": ["DEU", "FRA", "ESP", "GBR", "ITA"],
+      "countries": [
+        {
+          "isoCode": "DEU",
+          "name": "Deutschland",
+          "summary": "Heimatmarkt und Innovationslabor des Konzerns.",
+          "markers": [
+            {
+              "id": "deu-innovation",
+              "topic": "Innovation",
+              "color": "#bb6bd9",
+              "coordinates": [11.5761, 48.1372],
+              "title": "Innovation Hub München",
+              "description": "Highlights zu laufenden Innovationsprogrammen.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["Launch Quantum Sandbox", "Investitionsvolumen 45 Mio. EUR"]
+                },
+                "CVS": {
+                  "highlights": ["Neue KI-Plattform", "20 Patentanmeldungen"]
+                },
+                "RVS": {
+                  "highlights": ["Automatisierung von Service-Tickets", "Self-Service Portal"]
+                },
+                "Compare": {
+                  "CVS": {
+                    "highlights": ["F&E Budget 25 Mio. EUR", "12 aktive Pilotkunden"]
+                  },
+                  "RVS": {
+                    "highlights": ["F&E Budget 12 Mio. EUR", "8 Rollout-Projekte"]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "isoCode": "FRA",
+          "name": "Frankreich",
+          "summary": "Digital Hub mit Fokus auf Experience Design.",
+          "markers": [
+            {
+              "id": "fra-hr",
+              "topic": "HR",
+              "color": "#6fcf97",
+              "coordinates": [2.3522, 48.8566],
+              "title": "HR Dashboard Frankreich",
+              "description": "Fokus auf Weiterbildung & Retention.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["1.200 Mitarbeitende", "85 % Retention"]
+                },
+                "CVS": null,
+                "RVS": {
+                  "highlights": ["400 Mitarbeitende", "Neue Campus-Programme"]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "asia-pacific",
+      "name": "Asien-Pazifik",
+      "isoCodes": ["CHN", "IND", "JPN", "SGP", "AUS"],
+      "countries": [
+        {
+          "isoCode": "IND",
+          "name": "Indien",
+          "summary": "Strategischer Entwicklungsstandort für globale Plattformen.",
+          "markers": [
+            {
+              "id": "ind-tech",
+              "topic": "Technology",
+              "color": "#f2c94c",
+              "coordinates": [77.5946, 12.9716],
+              "title": "Tech Campus Bengaluru",
+              "description": "Updates zu Produktentwicklung und Talenten.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["Skalierung der Data Platform", "Cloud-Migrationsrate 72 %"]
+                },
+                "CVS": {
+                  "highlights": ["AI Center of Excellence", "40 neue Data Scientists"]
+                },
+                "RVS": {
+                  "highlights": ["Automation Factory", "Service-NPS 65"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "isoCode": "SGP",
+          "name": "Singapur",
+          "summary": "Regionale Schaltzentrale für Vertrieb & Partnerschaften.",
+          "markers": [
+            {
+              "id": "sgp-sales",
+              "topic": "Sales",
+              "color": "#ff6f91",
+              "coordinates": [103.8198, 1.3521],
+              "title": "Sales Performance Singapur",
+              "description": "Zahlen und Highlights aus dem regionalen Vertrieb.",
+              "datasets": {
+                "Group": {
+                  "highlights": ["Umsatz +12 %", "Top-Partner: GovConnect"]
+                },
+                "CVS": {
+                  "highlights": ["6 neue Enterprise-Logins", "Erfolgreicher Cross-Sell"]
+                },
+                "RVS": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

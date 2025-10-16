@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Futurmapa · Interaktive Konzern-Weltkarte</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <main id="map-container">
+        <div id="continent-chips" aria-label="Kontinentauswahl"></div>
+        <div id="breadcrumb" aria-label="Navigation"></div>
+        <div id="map"></div>
+        <button id="reset-view" type="button">Zur Weltansicht</button>
+        <div id="map-tooltip" role="status" aria-live="polite"></div>
+      </main>
+      <aside id="sidebar" aria-label="Regionale Details">
+        <header class="sidebar-header">
+          <h1>Globale Präsenz</h1>
+          <p class="subtitle">
+            Wähle einen Kontinent, zoome in ein Land und entdecke die wichtigsten Kennzahlen
+            der einzelnen Geschäftsbereiche.
+          </p>
+        </header>
+        <section id="continent-summary" class="sidebar-section"></section>
+        <section id="country-list" class="sidebar-section" aria-live="polite"></section>
+        <section id="legend" class="sidebar-section"></section>
+      </aside>
+    </div>
+
+    <div id="detail-panel" aria-hidden="true">
+      <div class="panel-content" role="dialog" aria-modal="true" aria-labelledby="panel-title">
+        <button class="close-detail" type="button" aria-label="Fenster schließen">×</button>
+        <header class="panel-header">
+          <h2 id="panel-title"></h2>
+          <p id="panel-subtitle"></p>
+        </header>
+        <div id="org-selector" role="radiogroup" aria-label="Geschäftsbereich"></div>
+        <div id="panel-body"></div>
+      </div>
+    </div>
+
+    <script src="vendor/d3.min.js"></script>
+    <script src="data/world-geojson.js"></script>
+    <script src="scripts/data.js"></script>
+    <script src="scripts/app.js"></script>
+  </body>
+</html>

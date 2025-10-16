@@ -44,6 +44,8 @@
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
   const clipPathPath = clipPath.append("path");
 
+  const MAP_PADDING = 48;
+
   const projection = d3.geoMercator();
   const geoPath = d3.geoPath(projection);
   const sphereData = { type: "Sphere" };
@@ -67,10 +69,33 @@
   });
 
   let currentTransform = d3.zoomIdentity;
-  let width = mapContainer.clientWidth || 800;
-  let height = mapContainer.clientHeight || 600;
+  let width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+  let height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
 
-  const worldFeatures = WORLD_GEOJSON.features;
+  function normalizeFeatureOrientation(feature) {
+    if (!feature?.geometry) {
+      return feature;
+    }
+
+    const area = d3.geoArea(feature);
+    if (!Number.isFinite(area) || area <= Math.PI * 2) {
+      return feature;
+    }
+
+    const flipRing = (ring) => (Array.isArray(ring) ? ring.slice().reverse() : ring);
+    const geometry = feature.geometry;
+
+    if (geometry.type === "Polygon") {
+      geometry.coordinates = geometry.coordinates.map(flipRing);
+    } else if (geometry.type === "MultiPolygon") {
+      geometry.coordinates = geometry.coordinates.map((polygon) => polygon.map(flipRing));
+    }
+
+    return feature;
+  }
+
+  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
+  const worldFeatureCollection = { type: "FeatureCollection", features: worldFeatures };
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -79,17 +104,30 @@
   }
 
   function updateProjection() {
-    width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
-    height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
+    const bounds = mapContainer.getBoundingClientRect();
+    width = bounds.width || mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+    height = bounds.height || mapContainer.clientHeight || mapContainer.offsetHeight || 600;
     svg.attr("width", width).attr("height", height);
 
-    projection.fitExtent(
-      [
-        [40, 40],
-        [width - 40, height - 40]
-      ],
-      WORLD_GEOJSON
-    );
+    const padding = Math.min(MAP_PADDING, Math.max(width, height) / 4);
+    const extent = [
+      [padding, padding],
+      [Math.max(width - padding, padding * 2), Math.max(height - padding, padding * 2)]
+    ];
+    projection.fitExtent(extent, WORLD_GEOJSON);
+
+    const bounds = geoPath.bounds(worldFeatureCollection);
+    const [[x0, y0], [x1, y1]] = bounds;
+    const panMargin = Math.min(width, height) * 0.25;
+
+    zoom.extent([
+      [0, 0],
+      [width, height]
+    ]);
+    zoom.translateExtent([
+      [x0 - panMargin, y0 - panMargin],
+      [x1 + panMargin, y1 + panMargin]
+    ]);
 
     clipPathPath.attr("d", geoPath(sphereData));
     spherePath.attr("d", geoPath(sphereData));

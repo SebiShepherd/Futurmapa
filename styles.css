@@ -50,6 +50,8 @@ body::before {
 
 #map-container {
   position: relative;
+  background: var(--primary);
+  overflow: hidden;
 }
 
 #map {
@@ -61,6 +63,7 @@ body::before {
 #map svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 #map svg .map-sphere {

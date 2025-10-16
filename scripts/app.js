@@ -41,7 +41,7 @@
   glowMerge.append("feMergeNode").attr("in", "glow");
   glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-  const clipPath = defs.append("clipPath").attr("id", "map-clip");
+  const clipPath = defs.append("clipPath").attr("id", "map-clip").attr("clipPathUnits", "userSpaceOnUse");
   const clipPathPath = clipPath.append("path");
 
   const projection = d3.geoMercator();
@@ -70,7 +70,29 @@
   let width = mapContainer.clientWidth || 800;
   let height = mapContainer.clientHeight || 600;
 
-  const worldFeatures = WORLD_GEOJSON.features;
+  function normalizeFeatureOrientation(feature) {
+    if (!feature?.geometry) {
+      return feature;
+    }
+
+    const area = d3.geoArea(feature);
+    if (!Number.isFinite(area) || area <= Math.PI * 2) {
+      return feature;
+    }
+
+    const flipRing = (ring) => (Array.isArray(ring) ? ring.slice().reverse() : ring);
+    const geometry = feature.geometry;
+
+    if (geometry.type === "Polygon") {
+      geometry.coordinates = geometry.coordinates.map(flipRing);
+    } else if (geometry.type === "MultiPolygon") {
+      geometry.coordinates = geometry.coordinates.map((polygon) => polygon.map(flipRing));
+    }
+
+    return feature;
+  }
+
+  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -85,8 +107,8 @@
 
     projection.fitExtent(
       [
-        [40, 40],
-        [width - 40, height - 40]
+        [0, 0],
+        [width, height]
       ],
       WORLD_GEOJSON
     );

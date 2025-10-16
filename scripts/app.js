@@ -67,10 +67,32 @@
   });
 
   let currentTransform = d3.zoomIdentity;
-  let width = mapContainer.clientWidth || 800;
-  let height = mapContainer.clientHeight || 600;
+  let width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+  let height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
 
-  const worldFeatures = WORLD_GEOJSON.features;
+  function normalizeFeatureOrientation(feature) {
+    if (!feature?.geometry) {
+      return feature;
+    }
+
+    const area = d3.geoArea(feature);
+    if (!Number.isFinite(area) || area <= Math.PI * 2) {
+      return feature;
+    }
+
+    const flipRing = (ring) => (Array.isArray(ring) ? ring.slice().reverse() : ring);
+    const geometry = feature.geometry;
+
+    if (geometry.type === "Polygon") {
+      geometry.coordinates = geometry.coordinates.map(flipRing);
+    } else if (geometry.type === "MultiPolygon") {
+      geometry.coordinates = geometry.coordinates.map((polygon) => polygon.map(flipRing));
+    }
+
+    return feature;
+  }
+
+  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -79,14 +101,16 @@
   }
 
   function updateProjection() {
-    width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
-    height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
+    const bounds = mapContainer.getBoundingClientRect();
+    width = bounds.width || mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+    height = bounds.height || mapContainer.clientHeight || mapContainer.offsetHeight || 600;
     svg.attr("width", width).attr("height", height);
 
+    const padding = Math.min(40, width * 0.1, height * 0.1);
     projection.fitExtent(
       [
-        [40, 40],
-        [width - 40, height - 40]
+        [padding, padding],
+        [Math.max(width - padding, padding), Math.max(height - padding, padding)]
       ],
       WORLD_GEOJSON
     );

@@ -42,14 +42,14 @@
   glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
-  const clipPathPath = clipPath.append("path");
+  const clipRect = clipPath.append("rect");
 
+  const BASE_MAP_PADDING = 48;
   const projection = d3.geoMercator();
   const geoPath = d3.geoPath(projection);
-  const sphereData = { type: "Sphere" };
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const spherePath = mapLayer.append("path").attr("class", "map-sphere");
+  const spherePath = mapLayer.append("rect").attr("class", "map-sphere");
   const glowLayer = mapLayer.append("g").attr("class", "map-glow");
   const countriesLayer = mapLayer.append("g");
 
@@ -67,10 +67,32 @@
   });
 
   let currentTransform = d3.zoomIdentity;
-  let width = mapContainer.clientWidth || 800;
-  let height = mapContainer.clientHeight || 600;
+  let width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+  let height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
 
-  const worldFeatures = WORLD_GEOJSON.features;
+  function normalizeFeatureOrientation(feature) {
+    if (!feature?.geometry) {
+      return feature;
+    }
+
+    const area = d3.geoArea(feature);
+    if (!Number.isFinite(area) || area <= Math.PI * 2) {
+      return feature;
+    }
+
+    const flipRing = (ring) => (Array.isArray(ring) ? ring.slice().reverse() : ring);
+    const geometry = feature.geometry;
+
+    if (geometry.type === "Polygon") {
+      geometry.coordinates = geometry.coordinates.map(flipRing);
+    } else if (geometry.type === "MultiPolygon") {
+      geometry.coordinates = geometry.coordinates.map((polygon) => polygon.map(flipRing));
+    }
+
+    return feature;
+  }
+
+  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -79,24 +101,36 @@
   }
 
   function updateProjection() {
-    width = mapContainer.clientWidth || mapContainer.offsetWidth || 800;
-    height = mapContainer.clientHeight || mapContainer.offsetHeight || 600;
+    const bounds = mapContainer.getBoundingClientRect();
+    width = bounds.width || mapContainer.clientWidth || mapContainer.offsetWidth || 800;
+    height = bounds.height || mapContainer.clientHeight || mapContainer.offsetHeight || 600;
     svg.attr("width", width).attr("height", height);
 
-    projection.fitExtent(
-      [
-        [40, 40],
-        [width - 40, height - 40]
-      ],
-      WORLD_GEOJSON
-    );
+    const horizontalPadding = Math.max(BASE_MAP_PADDING * 1.6, width * 0.14);
+    const verticalPadding = Math.max(BASE_MAP_PADDING * 0.75, height * 0.1);
+    const extent = [
+      [horizontalPadding, verticalPadding],
+      [Math.max(width - horizontalPadding, horizontalPadding * 2), Math.max(height - verticalPadding, verticalPadding * 2)]
+    ];
+    projection.fitExtent(extent, WORLD_GEOJSON);
 
-    clipPathPath.attr("d", geoPath(sphereData));
-    spherePath.attr("d", geoPath(sphereData));
+    zoom
+      .extent([
+        [0, 0],
+        [width, height]
+      ])
+      .translateExtent([
+        [-horizontalPadding, -verticalPadding],
+        [width + horizontalPadding, height + verticalPadding]
+      ]);
+
+    clipRect.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
+    spherePath.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
 
     glowLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
+    svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {

@@ -14,7 +14,7 @@
   --shadow-strong: 0 25px 60px rgba(0, 18, 46, 0.45);
   --shadow-soft: 0 12px 30px rgba(0, 26, 58, 0.35);
   --transition-speed: 240ms;
-  font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  --font-family: "Inter", "Segoe UI", Roboto, sans-serif;
 }
 
 * {
@@ -28,7 +28,7 @@ body {
   background: radial-gradient(circle at 50% 30%, rgba(0, 121, 199, 0.35), rgba(0, 52, 92, 0.95)),
     var(--primary);
   color: var(--text);
-  font-family: var(--font-family, inherit);
+    font-family: var(--font-family, inherit), serif;
   overflow: hidden;
 }
 
@@ -43,19 +43,23 @@ body::before {
 }
 
 #app {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr);
-  height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr);
+    height: 100vh;
+    backdrop-filter: blur(12px);
 }
 
 #map-container {
-  position: relative;
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
 }
 
 #map {
-  position: absolute;
-  inset: 0;
-  margin: 0;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 #map svg {
@@ -64,9 +68,9 @@ body::before {
 }
 
 #map svg .map-sphere {
-  fill: var(--primary);
-  stroke: rgba(255, 255, 255, 0.12);
-  stroke-width: 0.6;
+  fill: transparent;
+  /*stroke: rgba(255, 255, 255, 0.12);*/
+  /*stroke-width: 0.6;*/
   filter: url(#outer-glow);
 }
 

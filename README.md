@@ -2,6 +2,8 @@
 
 Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweiter Kennzahlen.
 
+[![Live Preview](https://img.shields.io/badge/Live-Preview-blue?style=for-the-badge&logo=github)](https://sebishepherd.github.io/Futurmapa/)
+
 ## Features
 
 * Maßstabsgetreue Weltkarte auf Basis von D3 und TopoJSON, inklusive Zoom- und Pan-Interaktionen.

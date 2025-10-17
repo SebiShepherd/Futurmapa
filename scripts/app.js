@@ -76,7 +76,7 @@
     }
 
     const area = d3.geoArea(feature);
-    if (!Number.isFinite(area) || area <= Math.PI * 2) {
+    if (!Number.isFinite(area) || area <= 2 * Math.PI) {
       return feature;
     }
 

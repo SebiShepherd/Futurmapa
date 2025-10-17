@@ -57,6 +57,15 @@ Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
 * Responsives Layout wurde für typische Breakpoints (Desktop, Tablet, Mobile) ausgelegt.
 * Animationen und Interaktionen sind vollständig in Vanilla JS/D3 umgesetzt; es sind keine zusätzlichen Abhängigkeiten nötig.
 
+## Deployment auf GitHub Pages
+
+Die Bereitstellung erfolgt automatisch über GitHub Actions, sobald Änderungen auf `main` landen oder der Workflow manuell angestoßen wird.
+
+1. Aktiviere in den Repository-Einstellungen unter **Settings → Pages** die Option **Build and deployment → Source → GitHub Actions**.
+2. Nach erfolgreicher Ausführung des Workflows steht die Seite unter der in den Pages-Einstellungen angegebenen URL bereit.
+
+> ℹ️ Der Workflow lädt das komplette Repository (inklusive `index.html`, `styles.css`, `scripts/`, `data/`, `vendor/`) als statisches Artefakt hoch. Zusätzliche Build-Schritte sind nicht nötig.
+
 ## Barrierefreiheit & Hinweise
 
 * Tastaturbedienung: Kontinente, Länder und Organisationsauswahl sind per Tab erreichbar; Escape schließt das Detailpanel.

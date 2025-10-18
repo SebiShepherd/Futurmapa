@@ -6,6 +6,8 @@
   --stroke: rgba(20, 44, 70, 0.55);
   --map-glow-muted: rgba(255, 255, 255, 0.28);
   --map-glow-strong: rgba(255, 255, 255, 0.65);
+  --map-background-glow-strong: rgba(255, 255, 255, 0.35);
+  --map-background-glow-soft: rgba(255, 255, 255, 0.12);
   --text: #f4f7ff;
   --panel-bg: rgba(11, 26, 49, 0.82);
   --panel-border: rgba(255, 255, 255, 0.16);
@@ -91,11 +93,10 @@ body::before {
   height: 100%;
 }
 
-#map svg .map-sphere {
-  fill: transparent;
-  /*stroke: rgba(255, 255, 255, 0.12);*/
-  /*stroke-width: 0.6;*/
-  filter: url(#outer-glow);
+#map svg .map-background {
+  fill: url(#map-background-gradient);
+  opacity: 0.75;
+  pointer-events: none;
 }
 
 #map svg .country {
@@ -124,24 +125,29 @@ body::before {
   stroke-width: 1.2;
 }
 
-.map-glow path {
+.map-outline {
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.map-outline path {
   fill: none;
   stroke: var(--map-glow-muted);
   stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: url(#country-glow);
-  mix-blend-mode: screen;
-  pointer-events: none;
+  opacity: 0.6;
+  transition: stroke var(--transition-speed) ease, opacity var(--transition-speed) ease;
 }
 
-.map-glow path.is-active,
-.map-glow path.is-highlighted {
+.map-outline path.is-active,
+.map-outline path.is-highlighted {
   stroke: var(--map-glow-strong);
+  opacity: 0.85;
 }
 
-.map-glow path.is-inactive {
-  stroke: var(--map-glow-muted);
+.map-outline path.is-inactive {
+  opacity: 0.35;
 }
 
 .points-layer {

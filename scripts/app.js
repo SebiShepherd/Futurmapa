@@ -120,35 +120,35 @@
 
   const svg = d3.select(mapContainer).append("svg");
   const defs = svg.append("defs");
+  const rootStyles = getComputedStyle(document.documentElement);
+  const backgroundGlowStrong =
+    rootStyles.getPropertyValue("--map-background-glow-strong")?.trim() || "rgba(255, 255, 255, 0.35)";
+  const backgroundGlowSoft =
+    rootStyles.getPropertyValue("--map-background-glow-soft")?.trim() || "rgba(255, 255, 255, 0.12)";
 
-  const glowFilter = defs.append("filter").attr("id", "outer-glow");
-  glowFilter.append("feGaussianBlur").attr("stdDeviation", 18).attr("result", "coloredBlur");
-  const feMerge = glowFilter.append("feMerge");
-  feMerge.append("feMergeNode").attr("in", "coloredBlur");
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic");
-
-  const countryGlowFilter = defs
-    .append("filter")
-    .attr("id", "country-glow")
-    .attr("x", "-35%")
-    .attr("y", "-35%")
-    .attr("width", "170%")
-    .attr("height", "170%");
-  countryGlowFilter.append("feGaussianBlur").attr("stdDeviation", 6).attr("result", "glow");
-  const glowMerge = countryGlowFilter.append("feMerge");
-  glowMerge.append("feMergeNode").attr("in", "glow");
-  glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+  const backgroundGradient = defs
+    .append("radialGradient")
+    .attr("id", "map-background-gradient")
+    .attr("cx", "50%")
+    .attr("cy", "45%")
+    .attr("r", "65%");
+  backgroundGradient.append("stop").attr("offset", "0%").attr("stop-color", backgroundGlowStrong);
+  backgroundGradient.append("stop").attr("offset", "60%").attr("stop-color", backgroundGlowSoft);
+  backgroundGradient.append("stop").attr("offset", "100%").attr("stop-color", "rgba(255, 255, 255, 0)");
 
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
-  const clipPathPath = clipPath.append("path");
+  const clipPathRect = clipPath.append("rect");
 
-  const projection = d3.geoMercator();
+  const projection = d3.geoNaturalEarth1();
   const geoPath = d3.geoPath(projection);
-  const sphereData = { type: "Sphere" };
+
+  const backgroundRect = svg
+    .append("rect")
+    .attr("class", "map-background")
+    .attr("fill", "url(#map-background-gradient)");
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const spherePath = mapLayer.append("path").attr("class", "map-sphere");
-  const glowLayer = mapLayer.append("g").attr("class", "map-glow");
+  const outlineLayer = mapLayer.append("g").attr("class", "map-outline");
   const countriesLayer = mapLayer.append("g");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
@@ -190,7 +190,10 @@
     return feature;
   }
 
-  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
+  const worldFeatures = WORLD_GEOJSON.features
+    .filter((feature) => feature.id !== "ATA")
+    .map(normalizeFeatureOrientation);
+  const worldView = { type: "FeatureCollection", features: worldFeatures };
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -208,22 +211,40 @@
         [40, 40],
         [width - 40, height - 40]
       ],
-      WORLD_GEOJSON
+      worldView
     );
 
-    clipPathPath.attr("d", geoPath(sphereData));
-    spherePath.attr("d", geoPath(sphereData));
+    backgroundRect.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
+    clipPathRect.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
 
-    glowLayer.selectAll("path").attr("d", geoPath);
+    const bounds = geoPath.bounds(worldView);
+    if (bounds && bounds.length === 2) {
+      const padding = 20;
+      const [[x0, y0], [x1, y1]] = bounds;
+      if ([x0, y0, x1, y1].every((value) => Number.isFinite(value))) {
+        zoom
+          .extent([
+            [0, 0],
+            [width, height]
+          ])
+          .translateExtent([
+            [x0 - padding, y0 - padding],
+            [x1 + padding, y1 + padding]
+          ]);
+      }
+    }
+
+    outlineLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
+    svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {
-    const glowSelection = glowLayer.selectAll("path").data(worldFeatures, (d) => d.id);
+    const outlineSelection = outlineLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
-    const glowEntered = glowSelection.enter().append("path").attr("class", "country-glow").attr("d", geoPath);
+    const outlineEntered = outlineSelection.enter().append("path").attr("class", "country-outline").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -233,12 +254,13 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
-    glowSelection.exit().remove();
+    outlineSelection.exit().remove();
     countrySelection.exit().remove();
 
-    glowSelection.merge(glowEntered).attr("d", geoPath);
+    outlineSelection.merge(outlineEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
+    updateStrokeWidths();
   }
 
   function handleMouseMove(event, feature) {
@@ -283,8 +305,9 @@
   }
 
   function updateStrokeWidths() {
-    countriesLayer.selectAll("path").style("stroke-width", 0.6 / Math.sqrt(currentTransform.k || 1));
-    glowLayer.selectAll("path").style("stroke-width", 1.2 / Math.sqrt(currentTransform.k || 1));
+    const scaleFactor = Math.sqrt(currentTransform.k || 1);
+    countriesLayer.selectAll("path").style("stroke-width", 0.6 / scaleFactor);
+    outlineLayer.selectAll("path").style("stroke-width", 1.4 / scaleFactor);
   }
 
   function updateCountryClasses() {
@@ -308,7 +331,7 @@
       statusByIso.set(iso, { isActive, highlight });
     });
 
-    glowLayer.selectAll("path").each(function (feature) {
+    outlineLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
       const status = statusByIso.get(iso) || { isActive: false, highlight: false };
@@ -394,7 +417,9 @@
       return;
     }
 
-    const scale = Math.min(8, 0.9 / Math.max(dx / width, dy / height));
+    const [minScale, maxScale] = zoom.scaleExtent();
+    const targetScale = Math.min(8, 0.9 / Math.max(dx / width, dy / height));
+    const scale = Math.max(minScale, Math.min(maxScale, targetScale));
     const translate = [width / 2 - scale * x, height / 2 - scale * y];
     const transform = d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale);
 

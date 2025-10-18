@@ -120,6 +120,44 @@
 
   const svg = d3.select(mapContainer).append("svg");
   const defs = svg.append("defs");
+  const dropShadowFilter = defs
+    .append("filter")
+    .attr("id", "map-drop-shadow")
+    .attr("x", "-35%")
+    .attr("y", "-35%")
+    .attr("width", "170%")
+    .attr("height", "170%")
+    .attr("color-interpolation-filters", "sRGB");
+
+  dropShadowFilter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 6)
+    .attr("result", "shadow");
+
+  dropShadowFilter
+    .append("feOffset")
+    .attr("in", "shadow")
+    .attr("dx", 0)
+    .attr("dy", 0)
+    .attr("result", "offset-shadow");
+
+  dropShadowFilter
+    .append("feFlood")
+    .attr("flood-color", "#ffffff")
+    .attr("flood-opacity", 0.85)
+    .attr("result", "shadow-color");
+
+  dropShadowFilter
+    .append("feComposite")
+    .attr("in", "shadow-color")
+    .attr("in2", "offset-shadow")
+    .attr("operator", "in")
+    .attr("result", "glow");
+
+  const dropShadowMerge = dropShadowFilter.append("feMerge");
+  dropShadowMerge.append("feMergeNode").attr("in", "glow");
+  dropShadowMerge.append("feMergeNode").attr("in", "SourceGraphic");
   const rootStyles = getComputedStyle(document.documentElement);
   const backgroundGlowStrong =
     rootStyles.getPropertyValue("--map-background-glow-strong")?.trim() || "rgba(255, 255, 255, 0.35)";
@@ -148,8 +186,7 @@
     .attr("fill", "url(#map-background-gradient)");
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const outlineLayer = mapLayer.append("g").attr("class", "map-outline");
-  const countriesLayer = mapLayer.append("g");
+  const countriesLayer = mapLayer.append("g").attr("class", "countries-layer");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
 
@@ -234,17 +271,14 @@
       }
     }
 
-    outlineLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
     svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {
-    const outlineSelection = outlineLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
-    const outlineEntered = outlineSelection.enter().append("path").attr("class", "country-outline").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -254,10 +288,8 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
-    outlineSelection.exit().remove();
     countrySelection.exit().remove();
 
-    outlineSelection.merge(outlineEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
     updateStrokeWidths();
@@ -307,12 +339,9 @@
   function updateStrokeWidths() {
     const scaleFactor = Math.sqrt(currentTransform.k || 1);
     countriesLayer.selectAll("path").style("stroke-width", 0.6 / scaleFactor);
-    outlineLayer.selectAll("path").style("stroke-width", 1.4 / scaleFactor);
   }
 
   function updateCountryClasses() {
-    const statusByIso = new Map();
-
     countriesLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
@@ -327,18 +356,6 @@
       selection.classed("is-active", isActive);
       selection.classed("is-inactive", !isActive);
       selection.classed("is-highlighted", highlight);
-
-      statusByIso.set(iso, { isActive, highlight });
-    });
-
-    outlineLayer.selectAll("path").each(function (feature) {
-      const iso = feature.id;
-      const selection = d3.select(this);
-      const status = statusByIso.get(iso) || { isActive: false, highlight: false };
-
-      selection.classed("is-active", status.isActive);
-      selection.classed("is-inactive", !status.isActive);
-      selection.classed("is-highlighted", status.highlight);
     });
   }
 

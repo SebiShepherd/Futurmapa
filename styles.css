@@ -16,6 +16,12 @@
   --transition-speed: 240ms;
   --font-family: "Inter", "Segoe UI", Roboto, sans-serif;
   --chip-height: 55px; /* gemeinsame Höhe für Chips und Logo */
+  --ocean-light: #1d6fa5;
+  --ocean-mid: #0d3c63;
+  --ocean-dark: #02162e;
+  --outline-default: rgba(14, 37, 63, 0.75);
+  --outline-highlight: rgba(122, 209, 255, 0.85);
+  --outline-muted: rgba(32, 63, 93, 0.45);
 }
 
 * {
@@ -91,24 +97,26 @@ body::before {
   height: 100%;
 }
 
-#map svg .map-sphere {
-  fill: transparent;
-  /*stroke: rgba(255, 255, 255, 0.12);*/
-  /*stroke-width: 0.6;*/
-  filter: url(#outer-glow);
+#map svg .map-ocean {
+  fill: url(#ocean-gradient);
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 1.2;
+  opacity: 0.9;
 }
 
 #map svg .country {
   fill: var(--inactive-light);
   stroke: var(--stroke);
   stroke-width: 0.6;
-  transition: fill var(--transition-speed) ease, opacity var(--transition-speed) ease, stroke-width var(--transition-speed) ease;
+  transition: fill var(--transition-speed) ease, opacity var(--transition-speed) ease, stroke-width var(--transition-speed) ease,
+    filter var(--transition-speed) ease;
   cursor: pointer;
 }
 
 #map svg .country.is-active {
   fill: var(--primary);
   opacity: 1;
+  filter: drop-shadow(0 0 12px rgba(24, 113, 203, 0.35));
 }
 
 #map svg .country.is-highlighted {
@@ -124,24 +132,27 @@ body::before {
   stroke-width: 1.2;
 }
 
-.map-glow path {
+.country-outlines .country-outline {
   fill: none;
-  stroke: var(--map-glow-muted);
+  stroke: var(--outline-default);
   stroke-width: 1.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: url(#country-glow);
+  opacity: 0.75;
   mix-blend-mode: screen;
   pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(16, 101, 173, 0.35));
 }
 
-.map-glow path.is-active,
-.map-glow path.is-highlighted {
-  stroke: var(--map-glow-strong);
+.country-outlines .country-outline.is-active,
+.country-outlines .country-outline.is-highlighted {
+  stroke: var(--outline-highlight);
+  opacity: 0.95;
 }
 
-.map-glow path.is-inactive {
-  stroke: var(--map-glow-muted);
+.country-outlines .country-outline.is-inactive {
+  stroke: var(--outline-muted);
+  opacity: 0.55;
 }
 
 .points-layer {

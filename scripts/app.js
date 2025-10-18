@@ -121,35 +121,27 @@
   const svg = d3.select(mapContainer).append("svg");
   const defs = svg.append("defs");
 
-  const glowFilter = defs.append("filter").attr("id", "outer-glow");
-  glowFilter.append("feGaussianBlur").attr("stdDeviation", 18).attr("result", "coloredBlur");
-  const feMerge = glowFilter.append("feMerge");
-  feMerge.append("feMergeNode").attr("in", "coloredBlur");
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic");
-
-  const countryGlowFilter = defs
-    .append("filter")
-    .attr("id", "country-glow")
-    .attr("x", "-35%")
-    .attr("y", "-35%")
-    .attr("width", "170%")
-    .attr("height", "170%");
-  countryGlowFilter.append("feGaussianBlur").attr("stdDeviation", 6).attr("result", "glow");
-  const glowMerge = countryGlowFilter.append("feMerge");
-  glowMerge.append("feMergeNode").attr("in", "glow");
-  glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+  const oceanGradient = defs
+    .append("radialGradient")
+    .attr("id", "ocean-gradient")
+    .attr("cx", "50%")
+    .attr("cy", "45%")
+    .attr("r", "75%");
+  oceanGradient.append("stop").attr("offset", "0%").attr("stop-color", "#1d6fa5").attr("stop-opacity", 0.85);
+  oceanGradient.append("stop").attr("offset", "55%").attr("stop-color", "#0d3c63").attr("stop-opacity", 0.95);
+  oceanGradient.append("stop").attr("offset", "100%").attr("stop-color", "#02162e").attr("stop-opacity", 1);
 
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
-  const clipPathPath = clipPath.append("path");
+  const clipRect = clipPath.append("rect");
 
-  const projection = d3.geoMercator();
+  const projection = d3.geoNaturalEarth1();
   const geoPath = d3.geoPath(projection);
   const sphereData = { type: "Sphere" };
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const spherePath = mapLayer.append("path").attr("class", "map-sphere");
-  const glowLayer = mapLayer.append("g").attr("class", "map-glow");
-  const countriesLayer = mapLayer.append("g");
+  const oceanPath = mapLayer.append("path").attr("class", "map-ocean");
+  const countriesLayer = mapLayer.append("g").attr("class", "countries");
+  const outlineLayer = mapLayer.append("g").attr("class", "country-outlines");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
 
@@ -190,7 +182,11 @@
     return feature;
   }
 
-  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
+  const EXCLUDED_ISO_CODES = new Set(["ATA"]);
+  const worldFeatures = WORLD_GEOJSON.features
+    .filter((feature) => feature && !EXCLUDED_ISO_CODES.has(feature.id))
+    .map(normalizeFeatureOrientation);
+  const WORLD_VIEW = { type: "FeatureCollection", features: worldFeatures };
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -208,22 +204,35 @@
         [40, 40],
         [width - 40, height - 40]
       ],
-      WORLD_GEOJSON
+      WORLD_VIEW
     );
 
-    clipPathPath.attr("d", geoPath(sphereData));
-    spherePath.attr("d", geoPath(sphereData));
+    clipRect.attr("x", 0).attr("y", 0).attr("width", width).attr("height", height);
+    oceanPath.attr("d", geoPath(sphereData));
 
-    glowLayer.selectAll("path").attr("d", geoPath);
+    const worldBounds = geoPath.bounds(WORLD_VIEW);
+    const [[minX, minY], [maxX, maxY]] = worldBounds;
+    const translatePadding = 30;
+    zoom.extent([
+      [0, 0],
+      [width, height]
+    ]);
+    zoom.translateExtent([
+      [minX - translatePadding, minY - translatePadding],
+      [maxX + translatePadding, maxY + translatePadding]
+    ]);
+
+    outlineLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
+    svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {
-    const glowSelection = glowLayer.selectAll("path").data(worldFeatures, (d) => d.id);
+    const outlineSelection = outlineLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
-    const glowEntered = glowSelection.enter().append("path").attr("class", "country-glow").attr("d", geoPath);
+    const outlineEntered = outlineSelection.enter().append("path").attr("class", "country-outline").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -233,10 +242,10 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
-    glowSelection.exit().remove();
+    outlineSelection.exit().remove();
     countrySelection.exit().remove();
 
-    glowSelection.merge(glowEntered).attr("d", geoPath);
+    outlineSelection.merge(outlineEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
   }
@@ -284,7 +293,7 @@
 
   function updateStrokeWidths() {
     countriesLayer.selectAll("path").style("stroke-width", 0.6 / Math.sqrt(currentTransform.k || 1));
-    glowLayer.selectAll("path").style("stroke-width", 1.2 / Math.sqrt(currentTransform.k || 1));
+    outlineLayer.selectAll("path").style("stroke-width", 1.2 / Math.sqrt(currentTransform.k || 1));
   }
 
   function updateCountryClasses() {
@@ -308,7 +317,7 @@
       statusByIso.set(iso, { isActive, highlight });
     });
 
-    glowLayer.selectAll("path").each(function (feature) {
+    outlineLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
       const status = statusByIso.get(iso) || { isActive: false, highlight: false };

@@ -126,6 +126,43 @@
   const backgroundGlowSoft =
     rootStyles.getPropertyValue("--map-background-glow-soft")?.trim() || "rgba(255, 255, 255, 0.12)";
 
+  const dropShadowFilter = defs
+    .append("filter")
+    .attr("id", "map-drop-shadow")
+    .attr("x", "-40%")
+    .attr("y", "-40%")
+    .attr("width", "180%")
+    .attr("height", "180%");
+
+  dropShadowFilter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 9)
+    .attr("result", "blur");
+
+  dropShadowFilter
+    .append("feFlood")
+    .attr("flood-color", "#ffffff")
+    .attr("flood-opacity", 0.85)
+    .attr("result", "color");
+
+  dropShadowFilter
+    .append("feComposite")
+    .attr("in", "color")
+    .attr("in2", "blur")
+    .attr("operator", "in")
+    .attr("result", "shadow");
+
+  dropShadowFilter
+    .append("feOffset")
+    .attr("dx", 0)
+    .attr("dy", 0)
+    .attr("result", "offsetShadow");
+
+  const dropShadowMerge = dropShadowFilter.append("feMerge");
+  dropShadowMerge.append("feMergeNode").attr("in", "offsetShadow");
+  dropShadowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
   const backgroundGradient = defs
     .append("radialGradient")
     .attr("id", "map-background-gradient")
@@ -148,8 +185,7 @@
     .attr("fill", "url(#map-background-gradient)");
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const outlineLayer = mapLayer.append("g").attr("class", "map-outline");
-  const countriesLayer = mapLayer.append("g");
+  const countriesLayer = mapLayer.append("g").attr("class", "countries-layer");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
 
@@ -234,17 +270,14 @@
       }
     }
 
-    outlineLayer.selectAll("path").attr("d", geoPath);
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
     svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {
-    const outlineSelection = outlineLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
-    const outlineEntered = outlineSelection.enter().append("path").attr("class", "country-outline").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -254,13 +287,10 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
-    outlineSelection.exit().remove();
     countrySelection.exit().remove();
 
-    outlineSelection.merge(outlineEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
-    updateStrokeWidths();
   }
 
   function handleMouseMove(event, feature) {
@@ -301,18 +331,9 @@
     currentTransform = event.transform;
     mapLayer.attr("transform", currentTransform);
     updatePointTransforms();
-    updateStrokeWidths();
-  }
-
-  function updateStrokeWidths() {
-    const scaleFactor = Math.sqrt(currentTransform.k || 1);
-    countriesLayer.selectAll("path").style("stroke-width", 0.6 / scaleFactor);
-    outlineLayer.selectAll("path").style("stroke-width", 1.4 / scaleFactor);
   }
 
   function updateCountryClasses() {
-    const statusByIso = new Map();
-
     countriesLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
@@ -327,18 +348,6 @@
       selection.classed("is-active", isActive);
       selection.classed("is-inactive", !isActive);
       selection.classed("is-highlighted", highlight);
-
-      statusByIso.set(iso, { isActive, highlight });
-    });
-
-    outlineLayer.selectAll("path").each(function (feature) {
-      const iso = feature.id;
-      const selection = d3.select(this);
-      const status = statusByIso.get(iso) || { isActive: false, highlight: false };
-
-      selection.classed("is-active", status.isActive);
-      selection.classed("is-inactive", !status.isActive);
-      selection.classed("is-highlighted", status.highlight);
     });
   }
 

@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="">
+    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Fix map styling and add migration state files">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config.example.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/styles.custom.example.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -15,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="codex/fix-map-coloring-and-hover-issues-nntrc6" />
+        <entry key="$PROJECT_DIR$" value="codex/fix-map-coloring-and-hover-issues" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,6 +39,9 @@
     &quot;accountId&quot;: &quot;7e33eaad-9dd4-4e6e-b589-dd9ac8d57c77&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -50,19 +60,30 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "#3 on codex/fix-map-coloring-and-hover-issues",
+    "git-widget-placeholder": "visual-adjust",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/truei/WebstormProjects/Futurmapa",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa\assets" />
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -79,11 +100,26 @@
       <updated>1760561216956</updated>
       <workItem from="1760561218218" duration="3918000" />
       <workItem from="1760642630951" duration="10837000" />
-      <workItem from="1760689034375" duration="785000" />
+      <workItem from="1760689034375" duration="1976000" />
+      <workItem from="1760731300141" duration="7464000" />
     </task>
+    <task id="LOCAL-00001" summary="Fix map styling and add migration state files">
+      <option name="closed" value="true" />
+      <created>1760690201910</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1760690201911</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix map styling and add migration configuration files" />
+    <MESSAGE value="Fix map styling and add migration state files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix map styling and add migration state files" />
   </component>
 </project>

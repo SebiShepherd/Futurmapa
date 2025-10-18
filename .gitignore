@@ -1,0 +1,12 @@
+# Ignore runtime configuration (local overrides)
+config.json
+assets/favicon.ico
+assets/
+
+# Node / editor / OS temporary files (optional)
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Local custom stylesheet (not committed)
+styles.custom.css

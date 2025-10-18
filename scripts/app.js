@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   const state = {
     level: "world",
     continent: null,
@@ -6,6 +6,104 @@
     selectedPoint: null,
     selectedOrg: ORG_OPTIONS[0]
   };
+
+  // Runtime configuration loader (tries config.json, falls back to config.example.json)
+  async function loadRuntimeConfig() {
+    async function tryFetch(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return null;
+        // First try structured JSON parse; if the file contains comments, fall back to stripping them.
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch (err) {
+          // remove // line comments and /* block comments */ and try again
+          const stripped = text.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//gm, "");
+          try {
+            return JSON.parse(stripped);
+          } catch (err2) {
+            return null;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+      return null;
+    }
+
+    const fromConfig = await tryFetch("config.json");
+    if (fromConfig) {
+      fromConfig.__configSource = "config.json";
+      return fromConfig;
+    }
+    const fromExample = await tryFetch("config.example.json");
+    if (fromExample) {
+      fromExample.__configSource = "config.example.json";
+      return fromExample;
+    }
+    return { __configSource: "none" };
+  }
+
+  function applyRuntimeConfig(cfg) {
+    if (!cfg) return;
+    try {
+      if (cfg.documentTitle) {
+        const titleEl = document.getElementById("document-title");
+        if (titleEl) titleEl.textContent = cfg.documentTitle;
+        document.title = cfg.documentTitle;
+      } else if (cfg.companyName) {
+        const title = `${cfg.companyName} · Interaktive Konzern-Weltkarte`;
+        const titleEl = document.getElementById("document-title");
+        if (titleEl) titleEl.textContent = title;
+        document.title = title;
+      }
+
+      if (cfg.favicon) {
+        // remove existing icon links to avoid conflicts and caching oddities
+        document.querySelectorAll('link[rel~="icon"], link[rel~="shortcut icon"]').forEach((n) => n.parentNode && n.parentNode.removeChild(n));
+        const head = document.getElementsByTagName('head')[0] || document.documentElement;
+        const href = `${cfg.favicon}${cfg.favicon.includes('?') ? '&' : '?'}v=${Date.now()}`;
+        // standard icon
+        const newLink = document.createElement('link');
+        newLink.id = 'favicon-link';
+        newLink.rel = 'icon';
+        newLink.type = 'image/x-icon';
+        newLink.href = href;
+        head.appendChild(newLink);
+        // legacy shortcut icon for some platforms/browsers
+        const newLink2 = document.createElement('link');
+        newLink2.rel = 'shortcut icon';
+        newLink2.type = 'image/x-icon';
+        newLink2.href = href;
+        head.appendChild(newLink2);
+      }
+
+      if (cfg.logo) {
+        const img = document.getElementById("brand-logo");
+        if (img) {
+          img.src = cfg.logo;
+          img.style.display = "";
+        }
+      }
+
+      if (cfg.siteTitle) {
+        const el = document.getElementById("site-title");
+        if (el) el.textContent = cfg.siteTitle;
+      }
+
+      if (cfg.subtitle) {
+        const el = document.getElementById("site-subtitle");
+        if (el) el.textContent = cfg.subtitle;
+      }
+    } catch (e) {
+      console.warn("Applying runtime config failed", e);
+    }
+  }
+
+  const RUNTIME_CONFIG = await loadRuntimeConfig();
+  console.info("Loaded runtime config from:", RUNTIME_CONFIG.__configSource || "unknown", RUNTIME_CONFIG);
+  applyRuntimeConfig(RUNTIME_CONFIG);
 
   const mapContainer = document.getElementById("map");
   const detailPanel = document.getElementById("detail-panel");
@@ -421,7 +519,7 @@
       return;
     }
 
-    const continent = DATA_CONFIG.continents[state.continent];
+     const continent = DATA_CONFIG.continents[state.continent];
     const title = document.createElement("h2");
     title.textContent = `${state.continent} · Länder`;
     countryList.appendChild(title);
@@ -477,7 +575,7 @@
     title.textContent = "Legende";
     legend.appendChild(title);
 
-    Object.entries(DATA_CONFIG.categories).forEach(([key, value]) => {
+    Object.values(DATA_CONFIG.categories).forEach((value) => {
       const item = document.createElement("div");
       item.className = "legend-item";
       const swatch = document.createElement("span");

@@ -15,6 +15,7 @@
   --shadow-soft: 0 12px 30px rgba(0, 26, 58, 0.35);
   --transition-speed: 240ms;
   --font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  --chip-height: 55px; /* gemeinsame Höhe für Chips und Logo */
 }
 
 * {
@@ -53,6 +54,29 @@ body::before {
     position: relative;
     overflow: hidden;
     padding: 32px;
+}
+
+/* wrapper für logo + chips oben links */
+#map-top-left {
+  position: absolute;
+  top: 32px;
+  left: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 12;
+}
+
+#brand-logo {
+  height: var(--chip-height);
+  width: auto;
+}
+
+#continent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 11;
 }
 
 #map {
@@ -157,22 +181,14 @@ body::before {
   stroke: #fff;
 }
 
-#continent-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  position: absolute;
-  top: 32px;
-  left: 48px;
-  z-index: 10;
-}
-
 .chip {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: column; /* Name + small nebeneinander */
+  align-items: center;
+    justify-content: center;
   gap: 4px;
-  padding: 10px 16px;
+  padding: 0 16px; /* vertikale Größe durch --chip-height */
+  height: var(--chip-height);
   border-radius: 999px;
   background: var(--chip-bg);
   color: var(--text);
@@ -666,7 +682,7 @@ body::before {
     padding: 18px;
   }
 
-  #continent-chips {
+  #map-top-left {
     top: 20px;
     left: 20px;
   }

@@ -3,13 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Futurmapa · Interaktive Konzern-Weltkarte</title>
+    <title id="document-title">Futurmapa · Interaktive Konzern-Weltkarte</title>
+    <!-- Favicon is injected at runtime from config.json -->
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      // Versuche, optional eine lokale styles.custom.css zu laden (wird durch .gitignore ausgeschlossen).
+      // Wenn die Datei vorhanden ist, wird sie ans <head> gehängt und überschreibt die bestehenden Styles.
+      (function(){
+        const href = 'styles.custom.css';
+        try {
+          // HEAD-Abfrage vermeidet unnötige Fehler, funktioniert wenn die Seite per http(s) ausgeliefert wird.
+          fetch(href, { method: 'HEAD', cache: 'no-store' })
+            .then(res => {
+              if (res.ok) {
+                const l = document.createElement('link');
+                l.rel = 'stylesheet';
+                l.href = href;
+                document.head.appendChild(l);
+                console.info('Loaded optional custom stylesheet:', href);
+              }
+            })
+            .catch(() => {
+              // ignore network/file errors silently
+            });
+        } catch (e) {
+          // ignore if fetch isn't available (e.g., very old environments)
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app">
       <main id="map-container">
-        <div id="continent-chips" aria-label="Kontinentauswahl"></div>
+        <!-- wrapper für logo + chips oben links -->
+        <div id="map-top-left">
+          <img id="brand-logo" src="" alt="Logo" style="display:none;margin-right:6px;" />
+          <div id="continent-chips" aria-label="Kontinentauswahl"></div>
+        </div>
         <div id="breadcrumb" aria-label="Navigation"></div>
         <div id="map"></div>
         <button id="reset-view" type="button">Zur Weltansicht</button>
@@ -17,8 +47,11 @@
       </main>
       <aside id="sidebar" aria-label="Regionale Details">
         <header class="sidebar-header">
-          <h1>Globale Präsenz</h1>
-          <p class="subtitle">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <!-- logo image removed from here; it's now in the map header next to the chips -->
+            <h1 id="site-title">Globale Präsenz</h1>
+          </div>
+          <p class="subtitle" id="site-subtitle">
             Wähle einen Kontinent, zoome in ein Land und entdecke die wichtigsten Kennzahlen
             der einzelnen Geschäftsbereiche.
           </p>

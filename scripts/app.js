@@ -142,9 +142,11 @@
     .attr("dy", 0)
     .attr("result", "offset-shadow");
 
+  // Read glow color from CSS variable, fallback to white
+  const glowColor = rootStyles.getPropertyValue('--map-glow-strong')?.trim() || '#ffffff';
   dropShadowFilter
     .append("feFlood")
-    .attr("flood-color", "#ffffff")
+    .attr("flood-color", glowColor)
     .attr("flood-opacity", 0.85)
     .attr("result", "shadow-color");
 

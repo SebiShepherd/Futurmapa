@@ -3,9 +3,11 @@
   --primary-bright: #00b5e2;
   --inactive: #8c9eb8;
   --inactive-light: #d7e0ed;
-  --stroke: rgba(20, 44, 70, 0.55);
-  --map-glow-muted: rgba(255, 255, 255, 0.28);
-  --map-glow-strong: rgba(255, 255, 255, 0.65);
+  --map-backdrop-inner: rgba(0, 182, 255, 0.38);
+  --map-backdrop-outer: rgba(0, 40, 76, 0);
+  --country-outline: rgba(16, 36, 62, 0.65);
+  --country-outline-active: rgba(0, 182, 255, 0.6);
+  --country-outline-highlight: rgba(0, 220, 255, 0.75);
   --text: #f4f7ff;
   --panel-bg: rgba(11, 26, 49, 0.82);
   --panel-border: rgba(255, 255, 255, 0.16);
@@ -91,16 +93,16 @@ body::before {
   height: 100%;
 }
 
-#map svg .map-sphere {
-  fill: transparent;
-  /*stroke: rgba(255, 255, 255, 0.12);*/
-  /*stroke-width: 0.6;*/
-  filter: url(#outer-glow);
+#map svg .map-backdrop {
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 #map svg .country {
   fill: var(--inactive-light);
-  stroke: var(--stroke);
+  stroke: var(--country-outline);
   stroke-width: 0.6;
   transition: fill var(--transition-speed) ease, opacity var(--transition-speed) ease, stroke-width var(--transition-speed) ease;
   cursor: pointer;
@@ -126,22 +128,27 @@ body::before {
 
 .map-glow path {
   fill: none;
-  stroke: var(--map-glow-muted);
-  stroke-width: 1.4;
+  stroke: var(--country-outline);
+  stroke-width: 2.4;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: url(#country-glow);
   mix-blend-mode: screen;
+  opacity: 0.55;
   pointer-events: none;
 }
 
-.map-glow path.is-active,
+.map-glow path.is-active {
+  stroke: var(--country-outline-active);
+  opacity: 0.75;
+}
+
 .map-glow path.is-highlighted {
-  stroke: var(--map-glow-strong);
+  stroke: var(--country-outline-highlight);
+  opacity: 0.9;
 }
 
 .map-glow path.is-inactive {
-  stroke: var(--map-glow-muted);
+  opacity: 0.35;
 }
 
 .points-layer {

@@ -4,6 +4,7 @@ config.json
 # Runtime branding assets (logos, Favicons) bleiben lokal – das SVG-Sprite wird versioniert
 assets/*
 !assets/*.svg
+!assets/demo/
 
 # Node / editor / OS temporary files (optional)
 node_modules/

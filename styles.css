@@ -3,7 +3,8 @@
   --primary-bright: #00b5e2;
   --inactive: #8c9eb8;
   --inactive-light: #d7e0ed;
-  --stroke: rgba(20, 44, 70, 0.55);
+  /* stroke soll das gleiche wie --inactive sein (Alias) */
+  --stroke: var(--inactive);
   --map-glow-muted: rgba(255, 255, 255, 0.28);
   --map-glow-strong: rgba(255, 255, 255, 0.65);
   --map-background-glow-strong: rgba(255, 255, 255, 0.35);
@@ -31,7 +32,8 @@ body {
   background: radial-gradient(circle at 50% 30%, rgba(0, 121, 199, 0.35), rgba(0, 52, 92, 0.95)),
     var(--primary);
   color: var(--text);
-  font-family: var(--font-family, serif);
+  /* generic fallback explizit außerhalb von var() angeben, damit Linter-Tools es erkennen */
+  font-family: var(--font-family), sans-serif;
   overflow: hidden;
 }
 

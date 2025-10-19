@@ -101,9 +101,45 @@
     }
   }
 
+  async function injectPoiIconSprite() {
+    if (document.getElementById("poi-icon-symbols")) {
+      return;
+    }
+
+    try {
+      const res = await fetch("assets/icons.svg", { cache: "no-store" });
+      if (!res.ok) {
+        console.warn("Konnte Icon-Sprite nicht laden:", res.status, res.statusText);
+        return;
+      }
+
+      const markup = await res.text();
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = markup.trim();
+      const svgSprite = wrapper.querySelector("svg");
+      if (!svgSprite) {
+        console.warn("Icon-Sprite enthält kein <svg>.");
+        return;
+      }
+
+      svgSprite.id = "poi-icon-symbols";
+      svgSprite.setAttribute("focusable", "false");
+      svgSprite.setAttribute("aria-hidden", "true");
+      svgSprite.style.position = "absolute";
+      svgSprite.style.width = "0";
+      svgSprite.style.height = "0";
+      svgSprite.style.overflow = "hidden";
+      svgSprite.style.display = "none";
+      document.body.insertBefore(svgSprite, document.body.firstChild);
+    } catch (error) {
+      console.warn("Icon-Sprite konnte nicht geladen werden.", error);
+    }
+  }
+
   const RUNTIME_CONFIG = await loadRuntimeConfig();
   console.info("Loaded runtime config from:", RUNTIME_CONFIG.__configSource || "unknown", RUNTIME_CONFIG);
   applyRuntimeConfig(RUNTIME_CONFIG);
+  await injectPoiIconSprite();
 
   const mapContainer = document.getElementById("map");
   const detailPanel = document.getElementById("detail-panel");
@@ -472,16 +508,30 @@
         openDetailPanel(d, countryConfig);
       });
 
-    entered.append("circle").attr("class", "point-ring").attr("r", 16);
-    entered.append("circle").attr("class", "point-core").attr("r", 10);
+    const resolveIconId = (d) => DATA_CONFIG.categories[d.category]?.iconId || "icon-default";
+
+    entered.append("circle").attr("class", "point-ring").attr("r", 32);
+    entered.append("circle").attr("class", "point-core").attr("r", 20);
     entered
-      .append("text")
+      .append("use")
       .attr("class", "point-icon")
-      .attr("dy", "0.35em")
-      .text((d) => DATA_CONFIG.categories[d.category]?.icon || "•");
+      .attr("x", -18)
+      .attr("y", -18)
+      .attr("width", 36)
+      .attr("height", 36)
+      .attr("href", (d) => `#${resolveIconId(d)}`)
+      .attr("xlink:href", (d) => `#${resolveIconId(d)}`);
     entered.append("title").text((d) => d.title);
 
     const merged = entered.merge(selection);
+
+    merged
+      .select("use.point-icon")
+      .attr("href", (d) => `#${resolveIconId(d)}`)
+      .attr("xlink:href", (d) => `#${resolveIconId(d)}`);
+
+    merged.select("circle.point-ring").attr("r", 32);
+    merged.select("circle.point-core").attr("r", 20);
 
     merged.each(function (d) {
       d.countryIso = countryIso;

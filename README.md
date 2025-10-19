@@ -18,6 +18,7 @@ Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweit
 | `index.html` | Einstiegspunkt, lädt Map-Container, Sidebar, Detailpanel und Skripte. |
 | `styles.css` | Globales Styling, Farbschema und Animationen (inkl. Map-Glow). |
 | `vendor/d3.min.js` | Gebündelte D3-Version für Projektion, Zoom und Rendering. |
+| `assets/icons.svg` | Lokales SVG-Sprite mit Heroicons für die Karten-Pins. |
 | `data/world-geojson.js` | Weltkarte als JavaScript-Konstante (`WORLD_GEOJSON`). |
 | `scripts/data.js` | Beispieldaten, Kontinent- & Länder-Metadaten, Kategorien, Tooltips. |
 | `scripts/app.js` | Anwendungslogik (Initialisierung, Zoom, Tooltip, Panel-Rendering). |
@@ -48,8 +49,9 @@ Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelp
 
 ### Kategorien erweitern
 
-* `DATA_CONFIG.categories` steuert Farben, Icons und erläuternde Texte der Legende.
+* `DATA_CONFIG.categories` steuert Farben, Icon-Referenzen (`iconId`) und erläuternde Texte der Legende.
 * Neue Kategorien erscheinen automatisch in Legende, Tooltip und Detailansicht.
+* Die Marker nutzen Heroicons (MIT-Lizenz), gebündelt in [`assets/icons.svg`](assets/icons.svg). Eigene Symbole können durch weitere `<symbol>`-Einträge ergänzt werden.
 
 Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
 

@@ -3,7 +3,7 @@ config.json
 
 # Runtime branding assets (logos, Favicons) bleiben lokal – das SVG-Sprite wird versioniert
 assets/*
-!assets/custom/
+!assets/custom/*
 !assets/*.svg
 !assets/demo/
 

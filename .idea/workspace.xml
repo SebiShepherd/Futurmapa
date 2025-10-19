@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Fix map styling and add migration state files">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.example.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.example.json" afterDir="false" />
-    </list>
+    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to exclude custom assets and add new SVG logo icon" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,6 +75,7 @@
       <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa\assets\custom" />
       <recent name="C:\Users\truei\WebstormProjects\Futurmapa\assets" />
       <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
     </key>
@@ -110,7 +107,23 @@
       <option name="project" value="LOCAL" />
       <updated>1760690201911</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Update .gitignore and configuration files for demo assets">
+      <option name="closed" value="true" />
+      <created>1760869222167</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869222167</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update .gitignore to exclude custom assets and add new SVG logo icon">
+      <option name="closed" value="true" />
+      <created>1760869398146</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869398146</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -119,6 +132,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fix map styling and add migration configuration files" />
     <MESSAGE value="Fix map styling and add migration state files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix map styling and add migration state files" />
+    <MESSAGE value="Update .gitignore and configuration files for demo assets" />
+    <MESSAGE value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
   </component>
 </project>

@@ -142,6 +142,8 @@
     .attr("dy", 0)
     .attr("result", "offset-shadow");
 
+  const rootStyles = getComputedStyle(document.documentElement);
+  
   // Read glow color from CSS variable, fallback to white
   const glowColor = rootStyles.getPropertyValue('--map-glow-strong')?.trim() || '#ffffff';
   dropShadowFilter
@@ -160,7 +162,6 @@
   const dropShadowMerge = dropShadowFilter.append("feMerge");
   dropShadowMerge.append("feMergeNode").attr("in", "glow");
   dropShadowMerge.append("feMergeNode").attr("in", "SourceGraphic");
-  const rootStyles = getComputedStyle(document.documentElement);
   const backgroundGlowStrong =
     rootStyles.getPropertyValue("--map-background-glow-strong")?.trim() || "rgba(255, 255, 255, 0.35)";
   const backgroundGlowSoft =
@@ -472,13 +473,17 @@
         openDetailPanel(d, countryConfig);
       });
 
-    entered.append("circle").attr("class", "point-ring").attr("r", 16);
-    entered.append("circle").attr("class", "point-core").attr("r", 10);
-    entered
-      .append("text")
-      .attr("class", "point-icon")
-      .attr("dy", "0.35em")
-      .text((d) => DATA_CONFIG.categories[d.category]?.icon || "•");
+    entered.append("circle").attr("class", "point-ring").attr("r", 32);
+    entered.append("circle").attr("class", "point-core").attr("r", 20);
+    
+    // Add SVG icon instead of text
+    const iconGroup = entered.append("g").attr("class", "point-icon");
+    iconGroup
+      .append("path")
+      .attr("d", (d) => SVG_ICONS[DATA_CONFIG.categories[d.category]?.icon] || "")
+      .attr("transform", "translate(-10, -10) scale(0.83)")
+      .attr("fill", "#0b162f");
+    
     entered.append("title").text((d) => d.title);
 
     const merged = entered.merge(selection);

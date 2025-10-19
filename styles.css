@@ -144,12 +144,9 @@ body::before {
   stroke-width: 1.4;
 }
 
-.points-layer .data-point text.point-icon {
-  font-size: 12px;
-  fill: #0b162f;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: central;
+.points-layer .data-point text.point-icon,
+.points-layer .data-point g.point-icon {
+  pointer-events: none;
 }
 
 .points-layer .data-point.coming-soon circle.point-core {

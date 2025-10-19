@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Werkzeug zur Generierung der `scripts/data.js` aus Excel-Tabellen.
+"""Werkzeug zur Generierung der `scripts/data.js` aus Excel- oder CSV-Quellen.
 
-Aufrufbeispiel:
-    python tools/xlsx_to_datajs.py data/data-source.xlsx scripts/data.js
+Beispielaufrufe:
+    python tools/xlsx_to_datajs.py --xlsx data/data-source.xlsx --output scripts/data.js
+    python tools/xlsx_to_datajs.py --csv-dir data/csv-export --check-only
 
 Die Eingabe kann eine XLSX-Arbeitsmappe oder ein Verzeichnis mit CSV-
 Exporten der Tabellenblätter sein. Die Ausgabe wird mit zwei Leerzeichen
@@ -18,7 +19,7 @@ import sys
 from collections import OrderedDict, defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 import openpyxl
 
@@ -31,6 +32,14 @@ EXPECTED_SHEETS: Sequence[str] = (
     "org_progress",
     "org_compare",
 )
+
+
+def log(level: str, message: str) -> None:
+    """Gibt eine strukturierte Logzeile auf stdout oder stderr aus."""
+
+    level_normalized = level.upper()
+    stream = sys.stderr if level_normalized in {"ERROR", "WARNING"} else sys.stdout
+    print(f"{level_normalized}: {message}", file=stream)
 
 
 @dataclass
@@ -215,7 +224,7 @@ def clean_row(row: Dict[str, Any]) -> Dict[str, Any]:
     return cleaned
 
 
-def build_data(tables: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+def build_data(tables: Dict[str, List[Dict[str, Any]]]) -> Tuple[Optional[Dict[str, Any]], List[str]]:
     errors: List[str] = []
     categories = parse_categories(tables["categories"], errors)
     continents = parse_continents(tables["continents"], errors)
@@ -236,9 +245,7 @@ def build_data(tables: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     ensure_org_blocks_complete(points, organization_order, errors)
 
     if errors:
-        for message in errors:
-            print(f"Fehler: {message}", file=sys.stderr)
-        sys.exit(1)
+        return None, errors
 
     org_options = build_org_options(organization_order, compare_blocks)
 
@@ -258,7 +265,7 @@ def build_data(tables: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
     return {
         "org_options": org_options,
         "data_config": data_config,
-    }
+    }, []
 
 
 def parse_categories(rows: List[Dict[str, Any]], errors: List[str]) -> List[Category]:
@@ -639,25 +646,75 @@ def write_output(path: Path, content: str) -> None:
         handle.write(content)
 
 
-def main(argv: Optional[Sequence[str]] = None) -> None:
-    parser = argparse.ArgumentParser(description="Konvertiert Tabellenblätter in data.js")
-    parser.add_argument("source", help="XLSX-Datei oder Ordner mit CSV-Dateien")
-    parser.add_argument("destination", help="Zieldatei (JavaScript)")
-    args = parser.parse_args(argv)
+def parse_arguments(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Konvertiert Datenquellen in scripts/data.js")
+    input_group = parser.add_mutually_exclusive_group(required=True)
+    input_group.add_argument("--xlsx", metavar="PFAD", help="Pfad zur XLSX-Datei mit allen Tabellenblättern")
+    input_group.add_argument(
+        "--csv-dir",
+        metavar="VERZEICHNIS",
+        help="Verzeichnis mit CSV-Dateien (eine Datei pro Tabellenblatt)",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        metavar="DATEI",
+        help="Zieldatei (JavaScript)",
+    )
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Nur Validierung durchführen, keine Datei schreiben",
+    )
+    return parser.parse_args(argv)
 
-    source_path = Path(args.source)
-    destination_path = Path(args.destination)
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = parse_arguments(argv)
+
+    if not args.check_only and not args.output:
+        log("ERROR", "--output ist erforderlich, wenn nicht --check-only genutzt wird")
+        return 2
 
     try:
-        tables = load_tables(source_path)
+        if args.xlsx:
+            source_path = Path(args.xlsx)
+            tables = load_from_xlsx(source_path)
+            source_description = f"XLSX-Datei {source_path}"
+        else:
+            source_path = Path(args.csv_dir)
+            tables = load_from_csv_dir(source_path)
+            source_description = f"CSV-Verzeichnis {source_path}"
     except Exception as exc:  # noqa: BLE001
-        print(f"Fehler: {exc}", file=sys.stderr)
-        sys.exit(1)
+        log("ERROR", f"Quelldaten konnten nicht geladen werden: {exc}")
+        return 2
 
-    data = build_data(tables)
-    content = render_js(data)
-    write_output(destination_path, content)
+    log("INFO", f"Quelldaten erfolgreich gelesen aus {source_description}")
+
+    data, errors = build_data(tables)
+    if errors:
+        for message in errors:
+            log("ERROR", message)
+        log("ERROR", "Validierung fehlgeschlagen.")
+        return 1
+
+    assert data is not None
+
+    if args.check_only:
+        log("INFO", "Validierung erfolgreich abgeschlossen (Check-Only).")
+        return 0
+
+    output_path = Path(args.output)
+    try:
+        content = render_js(data)
+        write_output(output_path, content)
+    except Exception as exc:  # noqa: BLE001
+        log("ERROR", f"Ausgabe konnte nicht geschrieben werden: {exc}")
+        return 3
+
+    log("INFO", f"Datei '{output_path}' aktualisiert.")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

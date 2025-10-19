@@ -1,0 +1,60 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"025cd9f7-1e8c-421a-9197-1853df2f06a5\" name=\"Changes\" comment=\"Add runtime configuration support and custom styles\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/copilotDiffState.xml\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/scripts/app.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/scripts/app.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/styles.css\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/styles.css\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"codex/fix-map-coloring-and-hover-issues\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;SebiShepherd&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/SebiShepherd/Futurmapa.git&quot;,\r\n    &quot;accountId&quot;: &quot;7e33eaad-9dd4-4e6e-b589-dd9ac8d57c77&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 2\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"347ObgjNCbpWEgZbXXGqLq0NjZP\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"JavaScript Debug.index.html.executor\": \"Run\",\r\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\r\n    \"Node.js.app.js.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1\": \"true\",\r\n    \"git-widget-placeholder\": \"visual-adjust\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"junie.onboarding.icon.badge.shown\": \"true\",\r\n    \"last_opened_file_path\": \"C:/Users/truei/WebstormProjects/Futurmapa\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"run.code.analysis.last.selected.profile\": \"pProject Default\",\r\n    \"settings.editor.selected.configurable\": \"reference.settings.ide.settings.web.browsers\",\r\n    \"to.speed.mode.migration.done\": \"true\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\truei\\WebstormProjects\\Futurmapa\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\truei\\WebstormProjects\\Futurmapa\\assets\" />\r\n      <recent name=\"C:\\Users\\truei\\WebstormProjects\\Futurmapa\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-WS-252.23892.411\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"025cd9f7-1e8c-421a-9197-1853df2f06a5\" name=\"Changes\" comment=\"\" />\r\n      <created>1760561216956</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1760561216956</updated>\r\n      <workItem from=\"1760561218218\" duration=\"3918000\" />\r\n      <workItem from=\"1760642630951\" duration=\"10837000\" />\r\n      <workItem from=\"1760689034375\" duration=\"1976000\" />\r\n      <workItem from=\"1760731300141\" duration=\"12586000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Fix map styling and add migration state files\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760690201910</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760690201911</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Add runtime configuration support and custom styles\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760781943817</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760781943817</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"3\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Fix map styling and add migration configuration files\" />\r\n    <MESSAGE value=\"Fix map styling and add migration state files\" />\r\n    <MESSAGE value=\"Add runtime configuration support and custom styles\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Add runtime configuration support and custom styles\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 9ce901d68dec0d83d3916f95998250ff85f4d070)
++++ b/.idea/workspace.xml	(date 1760791115360)
+@@ -4,12 +4,7 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Add runtime configuration support and custom styles">
+-      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/scripts/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/app.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
+-    </list>
++    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update stroke widths and styles for dynamic zoom effects" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -97,7 +92,7 @@
+       <workItem from="1760561218218" duration="3918000" />
+       <workItem from="1760642630951" duration="10837000" />
+       <workItem from="1760689034375" duration="1976000" />
+-      <workItem from="1760731300141" duration="12586000" />
++      <workItem from="1760731300141" duration="13460000" />
+     </task>
+     <task id="LOCAL-00001" summary="Fix map styling and add migration state files">
+       <option name="closed" value="true" />
+@@ -115,7 +110,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1760781943817</updated>
+     </task>
+-    <option name="localTasksCounter" value="3" />
++    <task id="LOCAL-00003" summary="Update stroke widths and styles for dynamic zoom effects">
++      <option name="closed" value="true" />
++      <created>1760788300964</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1760788300964</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -125,6 +128,7 @@
+     <MESSAGE value="Fix map styling and add migration configuration files" />
+     <MESSAGE value="Fix map styling and add migration state files" />
+     <MESSAGE value="Add runtime configuration support and custom styles" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Add runtime configuration support and custom styles" />
++    <MESSAGE value="Update stroke widths and styles for dynamic zoom effects" />
++    <option name="LAST_COMMIT_MESSAGE" value="Update stroke widths and styles for dynamic zoom effects" />
+   </component>
+ </project>
+\ No newline at end of file

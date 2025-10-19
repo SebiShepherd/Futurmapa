@@ -4,8 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to exclude custom assets and improve workspace configuration">
+    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to include WebStorm and IntelliJ specific files and directories">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilotDiffState.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copilotDiffState.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/data.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/data.js" afterDir="false" />
+    </list>
+    <list id="0c1dfc63-6d06-4f85-8b60-7078cea2be2f" name="R4" comment="R4">
+      <change afterPath="$PROJECT_DIR$/data/data-schema.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/data-source.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="codex/update-poi-icons-to-use-svgs-kgcju2" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -57,7 +65,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "#24 on codex/update-poi-icons-to-use-svgs",
+    "git-widget-placeholder": "csv-data-implementation",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "C:/Users/truei/WebstormProjects/Futurmapa",
@@ -67,7 +75,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers",
+    "settings.editor.selected.configurable": "terminal",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -141,7 +149,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760870576274</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Update .gitignore to include WebStorm and IntelliJ specific files and directories">
+      <option name="closed" value="true" />
+      <created>1760883239965</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1760883239965</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +169,7 @@
     <MESSAGE value="Update .gitignore and configuration files for demo assets" />
     <MESSAGE value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
     <MESSAGE value="Update .gitignore to exclude custom assets and improve workspace configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude custom assets and improve workspace configuration" />
+    <MESSAGE value="Update .gitignore to include WebStorm and IntelliJ specific files and directories" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to include WebStorm and IntelliJ specific files and directories" />
   </component>
 </project>

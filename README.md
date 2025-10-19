@@ -19,6 +19,8 @@ Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweit
 | `styles.css` | Globales Styling, Farbschema und Animationen (inkl. Map-Glow). |
 | `vendor/d3.min.js` | Gebündelte D3-Version für Projektion, Zoom und Rendering. |
 | `data/world-geojson.js` | Weltkarte als JavaScript-Konstante (`WORLD_GEOJSON`). |
+| `data/data-source.xlsx` | Master-Workbook mit allen Kategorien, Kontinenten, Ländern und Organisationsdaten. |
+| `data/data-schema.md` | Dokumentation der Spalten je Tabellenblatt inkl. CSV-Hinweisen. |
 | `scripts/data.js` | Beispieldaten, Kontinent- & Länder-Metadaten, Kategorien, Tooltips. |
 | `scripts/app.js` | Anwendungslogik (Initialisierung, Zoom, Tooltip, Panel-Rendering). |
 
@@ -33,6 +35,7 @@ Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweit
 ## Datenpflege
 
 Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelpunkt für Inhalte.
+Für Offline-Pflege und Datenaustausch steht zusätzlich die Arbeitsmappe [`data/data-source.xlsx`](data/data-source.xlsx) zur Verfügung; die zugehörige Feldbeschreibung findest du in [`data/data-schema.md`](data/data-schema.md).
 
 ### Kontinente & Länder
 

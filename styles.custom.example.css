@@ -1,0 +1,51 @@
+/* styles.custom.example.css
+
+Kopie dieser Datei als `styles.custom.css` in das Projekt-Root,
+und die Datei wird automatisch geladen (und ist in .gitignore).
+
+Beispiele:
+- Überschreibe CSS-Variablen
+- Ändere Abstände oder Farben
+- Passe das Logo an
+
+Wichtiger Hinweis: Die Datei `styles.custom.css` wird nicht im Repo landen
+(sie ist in .gitignore). Nutze sie für lokale Anpassungen.
+*/
+
+/* ------------------------------------------------------------------
+   Beispiel 1: Variable überschreiben (Größe von Logo & Chips anpassen; 48px macht das Logo und die Chips größer)
+   Entferne die umgebenden Comment-Marker, um den Block zu aktivieren.
+   ------------------------------------------------------------------
+/*
+:root {
+  --chip-height: 48px;
+}
+*/
+
+/* ------------------------------------------------------------------
+   Beispiel 2: Logo-Abstand zentral in CSS (anstatt Inline-Style)
+   ------------------------------------------------------------------ */
+/*
+#brand-logo {
+  margin-right: 10px;
+}
+*/
+
+/* ------------------------------------------------------------------
+   Beispiel 3: Ersten Chip hervorheben
+   ------------------------------------------------------------------ */
+/*
+.chip:first-child {
+  background: rgba(255, 255, 255, 0.32);
+  border-color: rgba(255, 255, 255, 0.40);
+}
+*/
+
+/* ------------------------------------------------------------------
+   Beispiel 4: Mobile-Override (kleinere Chips auf schmalen Viewports)
+   ------------------------------------------------------------------ */
+/*
+@media (max-width: 768px) {
+  :root { --chip-height: 40px; }
+}
+*/

@@ -1,0 +1,13 @@
+# Ignore runtime configuration (local overrides)
+config.json
+
+# Runtime branding assets (logos, Favicons) are kept local and moved to custom folder, while versioning the SVG-Sprite
+assets/custom/*
+
+# Node / editor / OS temporary files (optional)
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Local custom stylesheet (not committed)
+styles.custom.css

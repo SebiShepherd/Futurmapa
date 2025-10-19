@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/styles.css" afterDir="false" />
+    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to exclude custom assets and improve workspace configuration">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +15,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="codex/fix-map-coloring-and-hover-issues-nntrc6" />
+        <entry key="$PROJECT_DIR$" value="codex/update-poi-icons-to-use-svgs-kgcju2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -32,6 +32,13 @@
     &quot;accountId&quot;: &quot;7e33eaad-9dd4-4e6e-b589-dd9ac8d57c77&quot;
   }
 }</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -43,26 +50,38 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "JavaScript Debug.index.html.executor": "Run",
+    "JavaScript Debug.index.html.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Node.js.app.js.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "#3 on codex/fix-map-coloring-and-hover-issues",
+    "git-widget-placeholder": "#24 on codex/update-poi-icons-to-use-svgs",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/truei/WebstormProjects/Futurmapa",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa\assets\custom" />
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa\assets" />
+      <recent name="C:\Users\truei\WebstormProjects\Futurmapa" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -79,11 +98,61 @@
       <updated>1760561216956</updated>
       <workItem from="1760561218218" duration="3918000" />
       <workItem from="1760642630951" duration="10837000" />
-      <workItem from="1760689034375" duration="785000" />
+      <workItem from="1760689034375" duration="1976000" />
+      <workItem from="1760731300141" duration="7464000" />
     </task>
+    <task id="LOCAL-00001" summary="Fix map styling and add migration state files">
+      <option name="closed" value="true" />
+      <created>1760690201910</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1760690201911</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Update .gitignore and configuration files for demo assets">
+      <option name="closed" value="true" />
+      <created>1760869222167</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869222167</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update .gitignore to exclude custom assets and add new SVG logo icon">
+      <option name="closed" value="true" />
+      <created>1760869398146</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869398146</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Update .gitignore to exclude custom assets and improve workspace configuration">
+      <option name="closed" value="true" />
+      <created>1760869501418</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869501418</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update .gitignore to exclude custom assets and improve workspace configuration">
+      <option name="closed" value="true" />
+      <created>1760870576274</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1760870576274</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix map styling and add migration configuration files" />
+    <MESSAGE value="Fix map styling and add migration state files" />
+    <MESSAGE value="Update .gitignore and configuration files for demo assets" />
+    <MESSAGE value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
+    <MESSAGE value="Update .gitignore to exclude custom assets and improve workspace configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude custom assets and improve workspace configuration" />
   </component>
 </project>

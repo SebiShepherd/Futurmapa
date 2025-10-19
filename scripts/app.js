@@ -1,4 +1,4 @@
-(() => {
+(async () => {
   const state = {
     level: "world",
     continent: null,
@@ -6,6 +6,146 @@
     selectedPoint: null,
     selectedOrg: ORG_OPTIONS[0]
   };
+
+  // Runtime configuration loader (tries config.json, falls back to config.example.json)
+  async function loadRuntimeConfig() {
+    async function tryFetch(path) {
+      try {
+        const res = await fetch(path, { cache: "no-store" });
+        if (!res.ok) return null;
+        // First try structured JSON parse; if the file contains comments, fall back to stripping them.
+        const text = await res.text();
+        try {
+          return JSON.parse(text);
+        } catch (err) {
+          // remove // line comments and /* block comments */ and try again
+          const stripped = text.replace(/\/\/.*$/gm, "").replace(/\/\*[\s\S]*?\*\//gm, "");
+          try {
+            return JSON.parse(stripped);
+          } catch (err2) {
+            return null;
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+      return null;
+    }
+
+    const fromConfig = await tryFetch("config.json");
+    if (fromConfig) {
+      fromConfig.__configSource = "config.json";
+      return fromConfig;
+    }
+    const fromExample = await tryFetch("config.example.json");
+    if (fromExample) {
+      fromExample.__configSource = "config.example.json";
+      return fromExample;
+    }
+    return { __configSource: "none" };
+  }
+
+  function applyRuntimeConfig(cfg) {
+    if (!cfg) return;
+    try {
+      if (cfg.documentTitle) {
+        const titleEl = document.getElementById("document-title");
+        if (titleEl) titleEl.textContent = cfg.documentTitle;
+        document.title = cfg.documentTitle;
+      } else if (cfg.companyName) {
+        const title = `${cfg.companyName} · Interaktive Konzern-Weltkarte`;
+        const titleEl = document.getElementById("document-title");
+        if (titleEl) titleEl.textContent = title;
+        document.title = title;
+      }
+
+      if (cfg.favicon) {
+        // remove existing icon links to avoid conflicts and caching oddities
+        document.querySelectorAll('link[rel~="icon"], link[rel~="shortcut icon"]').forEach((n) => n.parentNode && n.parentNode.removeChild(n));
+        const head = document.getElementsByTagName('head')[0] || document.documentElement;
+        const href = `${cfg.favicon}${cfg.favicon.includes('?') ? '&' : '?'}v=${Date.now()}`;
+        // standard icon
+        const newLink = document.createElement('link');
+        newLink.id = 'favicon-link';
+        newLink.rel = 'icon';
+        newLink.type = 'image/x-icon';
+        newLink.href = href;
+        head.appendChild(newLink);
+        // legacy shortcut icon for some platforms/browsers
+        const newLink2 = document.createElement('link');
+        newLink2.rel = 'shortcut icon';
+        newLink2.type = 'image/x-icon';
+        newLink2.href = href;
+        head.appendChild(newLink2);
+      }
+
+      if (cfg.logo) {
+        const img = document.getElementById("brand-logo");
+        if (img) {
+          img.src = cfg.logo;
+          img.style.display = "";
+        }
+      }
+
+      if (cfg.siteTitle) {
+        const el = document.getElementById("site-title");
+        if (el) el.textContent = cfg.siteTitle;
+      }
+
+      if (cfg.subtitle) {
+        const el = document.getElementById("site-subtitle");
+        if (el) el.textContent = cfg.subtitle;
+      }
+    } catch (e) {
+      console.warn("Applying runtime config failed", e);
+    }
+  }
+
+  const ICON_SPRITE_URL = "assets/icons.svg";
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const XLINK_NS = "http://www.w3.org/1999/xlink";
+
+  let iconSpritePromise = null;
+  let iconSpriteAvailable = false;
+
+  async function ensureIconSpriteLoaded() {
+    if (iconSpritePromise) return iconSpritePromise;
+    iconSpritePromise = (async () => {
+      try {
+        const response = await fetch(ICON_SPRITE_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const spriteMarkup = await response.text();
+        if (!spriteMarkup) {
+          iconSpriteAvailable = false;
+          return false;
+        }
+        const wrapper = document.createElement("div");
+        wrapper.className = "icon-sprite-container";
+        wrapper.setAttribute("aria-hidden", "true");
+        wrapper.style.display = "none";
+        wrapper.innerHTML = spriteMarkup;
+        document.body.insertBefore(wrapper, document.body.firstChild || null);
+        iconSpriteAvailable = true;
+        return true;
+      } catch (error) {
+        console.warn("Icon sprite konnte nicht geladen werden", error);
+        iconSpriteAvailable = false;
+        return false;
+      }
+    })();
+    return iconSpritePromise;
+  }
+
+  function resolveIconHref(iconId) {
+    if (!iconId) return null;
+    return iconId.startsWith("#") ? iconId : `#${iconId}`;
+  }
+
+  const RUNTIME_CONFIG = await loadRuntimeConfig();
+  console.info("Loaded runtime config from:", RUNTIME_CONFIG.__configSource || "unknown", RUNTIME_CONFIG);
+  applyRuntimeConfig(RUNTIME_CONFIG);
+
+  await ensureIconSpriteLoaded();
 
   const mapContainer = document.getElementById("map");
   const detailPanel = document.getElementById("detail-panel");
@@ -22,36 +162,74 @@
 
   const svg = d3.select(mapContainer).append("svg");
   const defs = svg.append("defs");
-
-  const glowFilter = defs.append("filter").attr("id", "outer-glow");
-  glowFilter.append("feGaussianBlur").attr("stdDeviation", 18).attr("result", "coloredBlur");
-  const feMerge = glowFilter.append("feMerge");
-  feMerge.append("feMergeNode").attr("in", "coloredBlur");
-  feMerge.append("feMergeNode").attr("in", "SourceGraphic");
-
-  const countryGlowFilter = defs
+  const dropShadowFilter = defs
     .append("filter")
-    .attr("id", "country-glow")
+    .attr("id", "map-drop-shadow")
     .attr("x", "-35%")
     .attr("y", "-35%")
     .attr("width", "170%")
-    .attr("height", "170%");
-  countryGlowFilter.append("feGaussianBlur").attr("stdDeviation", 6).attr("result", "glow");
-  const glowMerge = countryGlowFilter.append("feMerge");
-  glowMerge.append("feMergeNode").attr("in", "glow");
-  glowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+    .attr("height", "170%")
+    .attr("color-interpolation-filters", "sRGB");
+
+  dropShadowFilter
+    .append("feGaussianBlur")
+    .attr("in", "SourceAlpha")
+    .attr("stdDeviation", 6)
+    .attr("result", "shadow");
+
+  dropShadowFilter
+    .append("feOffset")
+    .attr("in", "shadow")
+    .attr("dx", 0)
+    .attr("dy", 0)
+    .attr("result", "offset-shadow");
+
+    // Suggestion: Read glow color from CSS variable, fallback to white
+    dropShadowFilter
+        .append("feFlood")
+        .attr("flood-color", "#ffffff")
+        .attr("flood-opacity", 0.85)
+        .attr("result", "shadow-color");
+
+  dropShadowFilter
+    .append("feComposite")
+    .attr("in", "shadow-color")
+    .attr("in2", "offset-shadow")
+    .attr("operator", "in")
+    .attr("result", "glow");
+
+  const dropShadowMerge = dropShadowFilter.append("feMerge");
+  dropShadowMerge.append("feMergeNode").attr("in", "glow");
+  dropShadowMerge.append("feMergeNode").attr("in", "SourceGraphic");
+  const rootStyles = getComputedStyle(document.documentElement);
+  const backgroundGlowStrong =
+    rootStyles.getPropertyValue("--map-background-glow-strong")?.trim() || "rgba(255, 255, 255, 0.35)";
+  const backgroundGlowSoft =
+    rootStyles.getPropertyValue("--map-background-glow-soft")?.trim() || "rgba(255, 255, 255, 0.12)";
+
+  const backgroundGradient = defs
+    .append("radialGradient")
+    .attr("id", "map-background-gradient")
+    .attr("cx", "50%")
+    .attr("cy", "45%")
+    .attr("r", "65%");
+  backgroundGradient.append("stop").attr("offset", "0%").attr("stop-color", backgroundGlowStrong);
+  backgroundGradient.append("stop").attr("offset", "60%").attr("stop-color", backgroundGlowSoft);
+  backgroundGradient.append("stop").attr("offset", "100%").attr("stop-color", "rgba(255, 255, 255, 0)");
 
   const clipPath = defs.append("clipPath").attr("id", "map-clip");
-  const clipPathPath = clipPath.append("path");
+  const clipPathRect = clipPath.append("rect");
 
-  const projection = d3.geoMercator();
+  const projection = d3.geoNaturalEarth1();
   const geoPath = d3.geoPath(projection);
-  const sphereData = { type: "Sphere" };
+
+  const backgroundRect = svg
+    .append("rect")
+    .attr("class", "map-background")
+    .attr("fill", "url(#map-background-gradient)");
 
   const mapLayer = svg.append("g").attr("class", "map-layer").attr("clip-path", "url(#map-clip)");
-  const spherePath = mapLayer.append("path").attr("class", "map-sphere");
-  const glowLayer = mapLayer.append("g").attr("class", "map-glow");
-  const countriesLayer = mapLayer.append("g");
+  const countriesLayer = mapLayer.append("g").attr("class", "countries-layer");
 
   const pointsLayer = svg.append("g").attr("class", "points-layer").attr("clip-path", "url(#map-clip)");
 
@@ -92,7 +270,10 @@
     return feature;
   }
 
-  const worldFeatures = WORLD_GEOJSON.features.map(normalizeFeatureOrientation);
+  const worldFeatures = WORLD_GEOJSON.features
+    .filter((feature) => feature.id !== "ATA")
+    .map(normalizeFeatureOrientation);
+  const worldView = { type: "FeatureCollection", features: worldFeatures };
   const featureByIso = new Map(worldFeatures.map((feature) => [feature.id, feature]));
 
   function isCountryActive(iso) {
@@ -110,22 +291,37 @@
         [40, 40],
         [width - 40, height - 40]
       ],
-      WORLD_GEOJSON
+      worldView
     );
 
-    clipPathPath.attr("d", geoPath(sphereData));
-    spherePath.attr("d", geoPath(sphereData));
+    backgroundRect.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
+    clipPathRect.attr("width", width).attr("height", height).attr("x", 0).attr("y", 0);
 
-    glowLayer.selectAll("path").attr("d", geoPath);
+    const bounds = geoPath.bounds(worldView);
+    if (bounds && bounds.length === 2) {
+      const padding = 20;
+      const [[x0, y0], [x1, y1]] = bounds;
+      if ([x0, y0, x1, y1].every((value) => Number.isFinite(value))) {
+        zoom
+          .extent([
+            [0, 0],
+            [width, height]
+          ])
+          .translateExtent([
+            [x0 - padding, y0 - padding],
+            [x1 + padding, y1 + padding]
+          ]);
+      }
+    }
+
     countriesLayer.selectAll("path").attr("d", geoPath);
     updatePointPositions();
+    svg.call(zoom.transform, currentTransform);
   }
 
   function drawCountries() {
-    const glowSelection = glowLayer.selectAll("path").data(worldFeatures, (d) => d.id);
     const countrySelection = countriesLayer.selectAll("path").data(worldFeatures, (d) => d.id);
 
-    const glowEntered = glowSelection.enter().append("path").attr("class", "country-glow").attr("d", geoPath);
     const entered = countrySelection
       .enter()
       .append("path")
@@ -135,12 +331,11 @@
       .on("mouseleave", handleMouseLeave)
       .on("click", handleCountryClick);
 
-    glowSelection.exit().remove();
     countrySelection.exit().remove();
 
-    glowSelection.merge(glowEntered).attr("d", geoPath);
     countrySelection.merge(entered).attr("d", geoPath);
     updateCountryClasses();
+    updateStrokeWidths();
   }
 
   function handleMouseMove(event, feature) {
@@ -185,13 +380,11 @@
   }
 
   function updateStrokeWidths() {
-    countriesLayer.selectAll("path").style("stroke-width", 0.6 / Math.sqrt(currentTransform.k || 1));
-    glowLayer.selectAll("path").style("stroke-width", 1.2 / Math.sqrt(currentTransform.k || 1));
+    const scaleFactor = Math.sqrt(currentTransform.k || 1);
+    countriesLayer.selectAll("path").style("stroke-width", 0.6 / scaleFactor);
   }
 
   function updateCountryClasses() {
-    const statusByIso = new Map();
-
     countriesLayer.selectAll("path").each(function (feature) {
       const iso = feature.id;
       const selection = d3.select(this);
@@ -206,18 +399,6 @@
       selection.classed("is-active", isActive);
       selection.classed("is-inactive", !isActive);
       selection.classed("is-highlighted", highlight);
-
-      statusByIso.set(iso, { isActive, highlight });
-    });
-
-    glowLayer.selectAll("path").each(function (feature) {
-      const iso = feature.id;
-      const selection = d3.select(this);
-      const status = statusByIso.get(iso) || { isActive: false, highlight: false };
-
-      selection.classed("is-active", status.isActive);
-      selection.classed("is-inactive", !status.isActive);
-      selection.classed("is-highlighted", status.highlight);
     });
   }
 
@@ -296,7 +477,9 @@
       return;
     }
 
-    const scale = Math.min(8, 0.9 / Math.max(dx / width, dy / height));
+    const [minScale, maxScale] = zoom.scaleExtent();
+    const targetScale = Math.min(8, 0.9 / Math.max(dx / width, dy / height));
+    const scale = Math.max(minScale, Math.min(maxScale, targetScale));
     const translate = [width / 2 - scale * x, height / 2 - scale * y];
     const transform = d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale);
 
@@ -330,13 +513,18 @@
         openDetailPanel(d, countryConfig);
       });
 
-    entered.append("circle").attr("class", "point-ring").attr("r", 16);
-    entered.append("circle").attr("class", "point-core").attr("r", 10);
+    entered.append("circle").attr("class", "point-ring").attr("r", 30);
+    entered.append("circle").attr("class", "point-core").attr("r", 20);
     entered
-      .append("text")
+      .append("g")
+      .attr("class", "point-glyph")
+      .attr("transform", "scale(0.76)")
+      .append("use")
       .attr("class", "point-icon")
-      .attr("dy", "0.35em")
-      .text((d) => DATA_CONFIG.categories[d.category]?.icon || "•");
+      .attr("x", -12)
+      .attr("y", -12)
+      .attr("width", 24)
+      .attr("height", 24);
     entered.append("title").text((d) => d.title);
 
     const merged = entered.merge(selection);
@@ -348,12 +536,21 @@
       const [px, py] = currentTransform.apply(d.projected);
       const category = DATA_CONFIG.categories[d.category];
       const color = category?.color || "#ffffff";
+      const iconId = d.iconId || category?.iconId;
+      const href = resolveIconHref(iconId);
       d3.select(this)
         .classed("coming-soon", !!d.comingSoon)
         .attr("transform", `translate(${px},${py})`)
         .style("opacity", 1)
         .select("circle.point-core")
         .attr("fill", color);
+
+      const glyph = d3.select(this).select("use.point-icon");
+      if (href && iconSpriteAvailable) {
+        glyph.attr("href", href).attr("xlink:href", href).style("display", null);
+      } else {
+        glyph.attr("href", null).attr("xlink:href", null).style("display", "none");
+      }
     });
 
     highlightSelectedPoint(null);
@@ -421,7 +618,7 @@
       return;
     }
 
-    const continent = DATA_CONFIG.continents[state.continent];
+     const continent = DATA_CONFIG.continents[state.continent];
     const title = document.createElement("h2");
     title.textContent = `${state.continent} · Länder`;
     countryList.appendChild(title);
@@ -477,12 +674,23 @@
     title.textContent = "Legende";
     legend.appendChild(title);
 
-    Object.entries(DATA_CONFIG.categories).forEach(([key, value]) => {
+    Object.values(DATA_CONFIG.categories).forEach((value) => {
       const item = document.createElement("div");
       item.className = "legend-item";
       const swatch = document.createElement("span");
       swatch.className = "swatch";
       swatch.style.background = value.color;
+      let iconSvg = null;
+      const iconRef = resolveIconHref(value.iconId);
+      if (iconSpriteAvailable && iconRef) {
+        iconSvg = document.createElementNS(SVG_NS, "svg");
+        iconSvg.setAttribute("class", "legend-icon");
+        iconSvg.setAttribute("viewBox", "0 0 24 24");
+        const use = document.createElementNS(SVG_NS, "use");
+        use.setAttributeNS(null, "href", iconRef);
+        use.setAttributeNS(XLINK_NS, "href", iconRef);
+        iconSvg.appendChild(use);
+      }
       const textWrapper = document.createElement("div");
       const label = document.createElement("strong");
       label.textContent = value.label;
@@ -491,6 +699,9 @@
       textWrapper.appendChild(label);
       textWrapper.appendChild(description);
       item.appendChild(swatch);
+      if (iconSvg) {
+        item.appendChild(iconSvg);
+      }
       item.appendChild(textWrapper);
       legend.appendChild(item);
     });

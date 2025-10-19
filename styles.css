@@ -3,9 +3,12 @@
   --primary-bright: #00b5e2;
   --inactive: #8c9eb8;
   --inactive-light: #d7e0ed;
-  --stroke: rgba(20, 44, 70, 0.55);
+  /* stroke soll das gleiche wie --inactive sein (Alias) */
+  --stroke: var(--inactive);
   --map-glow-muted: rgba(255, 255, 255, 0.28);
   --map-glow-strong: rgba(255, 255, 255, 0.65);
+  --map-background-glow-strong: rgba(255, 255, 255, 0.35);
+  --map-background-glow-soft: rgba(255, 255, 255, 0.12);
   --text: #f4f7ff;
   --panel-bg: rgba(11, 26, 49, 0.82);
   --panel-border: rgba(255, 255, 255, 0.16);
@@ -15,6 +18,7 @@
   --shadow-soft: 0 12px 30px rgba(0, 26, 58, 0.35);
   --transition-speed: 240ms;
   --font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+  --chip-height: 55px; /* gemeinsame Höhe für Chips und Logo */
 }
 
 * {
@@ -28,7 +32,8 @@ body {
   background: radial-gradient(circle at 50% 30%, rgba(0, 121, 199, 0.35), rgba(0, 52, 92, 0.95)),
     var(--primary);
   color: var(--text);
-  font-family: var(--font-family, serif);
+  /* generic fallback explizit außerhalb von var() angeben, damit Linter-Tools es erkennen */
+  font-family: var(--font-family), sans-serif;
   overflow: hidden;
 }
 
@@ -55,6 +60,29 @@ body::before {
     padding: 32px;
 }
 
+/* wrapper für logo + chips oben links */
+#map-top-left {
+  position: absolute;
+  top: 32px;
+  left: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 12;
+}
+
+#brand-logo {
+  height: var(--chip-height);
+  width: auto;
+}
+
+#continent-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 11;
+}
+
 #map {
     position: absolute;
     inset: 0;
@@ -67,18 +95,21 @@ body::before {
   height: 100%;
 }
 
-#map svg .map-sphere {
-  fill: transparent;
-  /*stroke: rgba(255, 255, 255, 0.12);*/
-  /*stroke-width: 0.6;*/
-  filter: url(#outer-glow);
+#map svg .map-background {
+  fill: url(#map-background-gradient);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+#map svg .countries-layer {
+  filter: url(#map-drop-shadow);
 }
 
 #map svg .country {
   fill: var(--inactive-light);
   stroke: var(--stroke);
   stroke-width: 0.6;
-  transition: fill var(--transition-speed) ease, opacity var(--transition-speed) ease, stroke-width var(--transition-speed) ease;
+  transition: fill var(--transition-speed) ease, opacity var(--transition-speed) ease;
   cursor: pointer;
 }
 
@@ -96,30 +127,6 @@ body::before {
   cursor: default;
 }
 
-#map svg .country:hover {
-  stroke-width: 1.2;
-}
-
-.map-glow path {
-  fill: none;
-  stroke: var(--map-glow-muted);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: url(#country-glow);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.map-glow path.is-active,
-.map-glow path.is-highlighted {
-  stroke: var(--map-glow-strong);
-}
-
-.map-glow path.is-inactive {
-  stroke: var(--map-glow-muted);
-}
-
 .points-layer {
   pointer-events: none;
 }
@@ -131,20 +138,22 @@ body::before {
 }
 
 .points-layer .data-point circle.point-ring {
-  fill: rgba(255, 255, 255, 0.25);
+  fill: rgba(255, 255, 255, 0.16);
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 1.5;
 }
 
 .points-layer .data-point circle.point-core {
-  stroke: rgba(255, 255, 255, 0.7);
-  stroke-width: 1.4;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 2;
 }
 
-.points-layer .data-point text.point-icon {
-  font-size: 12px;
-  fill: #0b162f;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: central;
+.points-layer .data-point .point-glyph {
+  pointer-events: none;
+}
+
+.points-layer .data-point .point-glyph use.point-icon {
+  fill: #ffffff;
 }
 
 .points-layer .data-point.coming-soon circle.point-core {
@@ -153,26 +162,18 @@ body::before {
 }
 
 .points-layer .data-point.is-selected circle.point-core {
-  stroke-width: 2.4;
+  stroke-width: 3;
   stroke: #fff;
-}
-
-#continent-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  position: absolute;
-  top: 32px;
-  left: 48px;
-  z-index: 10;
 }
 
 .chip {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: column; /* Name + small nebeneinander */
+  align-items: center;
+    justify-content: center;
   gap: 4px;
-  padding: 10px 16px;
+  padding: 0 16px; /* vertikale Größe durch --chip-height */
+  height: var(--chip-height);
   border-radius: 999px;
   background: var(--chip-bg);
   color: var(--text);
@@ -389,7 +390,7 @@ body::before {
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -399,14 +400,26 @@ body::before {
 }
 
 .legend-item .swatch {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  min-height: 18px;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
   border-radius: 50%;
   display: inline-block;
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+}
+
+.legend-item svg.legend-icon {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  display: block;
+  color: #ffffff;
+}
+
+.legend-item svg.legend-icon use {
+  fill: currentColor;
 }
 
 .legend-item strong {
@@ -666,7 +679,7 @@ body::before {
     padding: 18px;
   }
 
-  #continent-chips {
+  #map-top-left {
     top: 20px;
     left: 20px;
   }

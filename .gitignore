@@ -1,7 +1,7 @@
 # Ignore runtime configuration (local overrides)
 config.json
 
-# Runtime branding assets (logos, Favicons) bleiben lokal – das SVG-Sprite wird versioniert
+# Runtime branding assets (logos, Favicons) are kept local and moved to custom folder, while versioning the SVG-Sprite
 assets/custom/*
 
 # Node / editor / OS temporary files (optional)

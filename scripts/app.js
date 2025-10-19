@@ -7,6 +7,38 @@
     selectedOrg: ORG_OPTIONS[0]
   };
 
+  const ICON_SPRITE_PATH = "assets/icons.svg";
+  const DEFAULT_ICON_SYMBOL = "icon-default";
+  let iconSpriteAvailable = false;
+
+  async function ensureIconSprite() {
+    if (ensureIconSprite.promise) return ensureIconSprite.promise;
+    ensureIconSprite.promise = fetch(ICON_SPRITE_PATH, { cache: "no-store" })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Sprite request failed with ${res.status}`);
+        return res.text();
+      })
+      .then((markup) => {
+        const temp = document.createElement("div");
+        temp.innerHTML = markup.trim();
+        const sprite = temp.querySelector("svg");
+        if (!sprite) throw new Error("Icon sprite is missing <svg> root");
+        sprite.setAttribute("aria-hidden", "true");
+        sprite.style.position = "absolute";
+        sprite.style.width = "0";
+        sprite.style.height = "0";
+        sprite.style.overflow = "hidden";
+        sprite.style.visibility = "hidden";
+        document.body.insertBefore(sprite, document.body.firstChild || null);
+        return sprite;
+      })
+      .catch((err) => {
+        console.warn("Icon sprite could not be loaded. Falling back to default dots.", err);
+        return null;
+      });
+    return ensureIconSprite.promise;
+  }
+
   // Runtime configuration loader (tries config.json, falls back to config.example.json)
   async function loadRuntimeConfig() {
     async function tryFetch(path) {
@@ -100,6 +132,9 @@
       console.warn("Applying runtime config failed", e);
     }
   }
+
+  const spriteNode = await ensureIconSprite();
+  iconSpriteAvailable = !!spriteNode;
 
   const RUNTIME_CONFIG = await loadRuntimeConfig();
   console.info("Loaded runtime config from:", RUNTIME_CONFIG.__configSource || "unknown", RUNTIME_CONFIG);
@@ -471,13 +506,33 @@
         openDetailPanel(d, countryConfig);
       });
 
-    entered.append("circle").attr("class", "point-ring").attr("r", 16);
-    entered.append("circle").attr("class", "point-core").attr("r", 10);
-    entered
-      .append("text")
-      .attr("class", "point-icon")
-      .attr("dy", "0.35em")
-      .text((d) => DATA_CONFIG.categories[d.category]?.icon || "•");
+    entered.append("circle").attr("class", "point-ring").attr("r", 28);
+    entered.append("circle").attr("class", "point-core").attr("r", 20);
+
+    if (iconSpriteAvailable) {
+      const iconSvg = entered
+        .append("svg")
+        .attr("class", "point-icon")
+        .attr("viewBox", "0 0 24 24")
+        .attr("width", 22)
+        .attr("height", 22)
+        .attr("x", -11)
+        .attr("y", -11)
+        .attr("focusable", "false")
+        .attr("aria-hidden", "true");
+
+      iconSvg
+        .append("use")
+        .attr("class", "point-icon-symbol")
+        .attr("href", `#${DEFAULT_ICON_SYMBOL}`)
+        .attr("xlink:href", `#${DEFAULT_ICON_SYMBOL}`);
+    } else {
+      entered
+        .append("text")
+        .attr("class", "point-icon point-icon--fallback")
+        .attr("dy", "0.35em")
+        .text("•");
+    }
     entered.append("title").text((d) => d.title);
 
     const merged = entered.merge(selection);
@@ -495,6 +550,21 @@
         .style("opacity", 1)
         .select("circle.point-core")
         .attr("fill", color);
+
+      if (iconSpriteAvailable) {
+        const iconSymbolId = category?.iconId || DEFAULT_ICON_SYMBOL;
+        d3
+          .select(this)
+          .select("use.point-icon-symbol")
+          .attr("href", `#${iconSymbolId}`)
+          .attr("xlink:href", `#${iconSymbolId}`);
+      } else {
+        const fallbackChar = category?.label?.charAt(0) || "•";
+        d3
+          .select(this)
+          .select("text.point-icon--fallback")
+          .text(fallbackChar);
+      }
     });
 
     highlightSelectedPoint(null);

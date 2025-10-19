@@ -1,7 +1,8 @@
 # Ignore runtime configuration (local overrides)
 config.json
 assets/favicon.ico
-assets/
+assets/*
+!assets/icons.svg
 
 # Node / editor / OS temporary files (optional)
 node_modules/

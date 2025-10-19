@@ -21,6 +21,7 @@ Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweit
 | `data/world-geojson.js` | Weltkarte als JavaScript-Konstante (`WORLD_GEOJSON`). |
 | `scripts/data.js` | Beispieldaten, Kontinent- & Länder-Metadaten, Kategorien, Tooltips. |
 | `scripts/app.js` | Anwendungslogik (Initialisierung, Zoom, Tooltip, Panel-Rendering). |
+| `assets/icons.svg` | Lokales SVG-Sprite mit den Karten-Icons (Heroicons, offline gebündelt). |
 
 ## Nutzung
 
@@ -48,10 +49,20 @@ Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelp
 
 ### Kategorien erweitern
 
-* `DATA_CONFIG.categories` steuert Farben, Icons und erläuternde Texte der Legende.
+* `DATA_CONFIG.categories` steuert Farben, Icons (`iconId`) und erläuternde Texte der Legende.
 * Neue Kategorien erscheinen automatisch in Legende, Tooltip und Detailansicht.
 
 Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
+
+### POI-Icons anpassen
+
+* Die Marker verwenden ein zentrales SVG-Sprite unter [`assets/icons.svg`](assets/icons.svg). Jede `<symbol>`-Definition erhält eine eindeutige ID (z. B. `icon-sales`).
+* Eine Kategorie verweist über `iconId` auf diese Symbol-ID, zum Beispiel `iconId: "icon-finance"` in [`scripts/data.js`](scripts/data.js).
+* Um neue Icons hinzuzufügen:
+  1. Ergänze im SVG-Sprite ein weiteres `<symbol>` mit einem 24×24-ViewBox und dem gewünschten Pfad. Die bestehenden Einträge zeigen das Format.
+  2. Verwende nur quelloffene Pfade (z. B. Heroicons, Material Icons) und halte sie lokal gebündelt, damit der Offline-Betrieb erhalten bleibt.
+  3. Trage die neue `iconId` in der passenden Kategorie ein. Nicht zugeordnete Kategorien fallen auf das generische `icon-default` zurück.
+* Die Icons werden in der Karte automatisch weiß eingefärbt und erhalten großzügigen Abstand zum farbigen Marker-Kern.
 
 ## Entwicklung & Testing
 

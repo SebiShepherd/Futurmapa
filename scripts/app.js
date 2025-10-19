@@ -477,11 +477,16 @@
     entered.append("circle").attr("class", "point-core").attr("r", 20);
     
     // Add SVG icon instead of text
+    // SVG icons are 24x24, centered at origin with scale ~0.83 to fit in 20px core circle
+    const ICON_SIZE = 24;
+    const ICON_OFFSET = -ICON_SIZE / 2; 
+    const ICON_SCALE = 0.83;
+    
     const iconGroup = entered.append("g").attr("class", "point-icon");
     iconGroup
       .append("path")
       .attr("d", (d) => SVG_ICONS[DATA_CONFIG.categories[d.category]?.icon] || "")
-      .attr("transform", "translate(-10, -10) scale(0.83)")
+      .attr("transform", `translate(${ICON_OFFSET}, ${ICON_OFFSET}) scale(${ICON_SCALE})`)
       .attr("fill", "#0b162f");
     
     entered.append("title").text((d) => d.title);

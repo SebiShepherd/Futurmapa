@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to exclude custom assets and add new SVG logo icon" />
+    <list default="true" id="025cd9f7-1e8c-421a-9197-1853df2f06a5" name="Changes" comment="Update .gitignore to exclude custom assets and improve workspace configuration">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.bak.json" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -123,7 +127,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760869398146</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Update .gitignore to exclude custom assets and improve workspace configuration">
+      <option name="closed" value="true" />
+      <created>1760869501418</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760869501418</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,6 +146,7 @@
     <MESSAGE value="Fix map styling and add migration state files" />
     <MESSAGE value="Update .gitignore and configuration files for demo assets" />
     <MESSAGE value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude custom assets and add new SVG logo icon" />
+    <MESSAGE value="Update .gitignore to exclude custom assets and improve workspace configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update .gitignore to exclude custom assets and improve workspace configuration" />
   </component>
 </project>

@@ -101,9 +101,51 @@
     }
   }
 
+  const ICON_SPRITE_URL = "assets/icons.svg";
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const XLINK_NS = "http://www.w3.org/1999/xlink";
+
+  let iconSpritePromise = null;
+  let iconSpriteAvailable = false;
+
+  async function ensureIconSpriteLoaded() {
+    if (iconSpritePromise) return iconSpritePromise;
+    iconSpritePromise = (async () => {
+      try {
+        const response = await fetch(ICON_SPRITE_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const spriteMarkup = await response.text();
+        if (!spriteMarkup) {
+          iconSpriteAvailable = false;
+          return false;
+        }
+        const wrapper = document.createElement("div");
+        wrapper.className = "icon-sprite-container";
+        wrapper.setAttribute("aria-hidden", "true");
+        wrapper.style.display = "none";
+        wrapper.innerHTML = spriteMarkup;
+        document.body.insertBefore(wrapper, document.body.firstChild || null);
+        iconSpriteAvailable = true;
+        return true;
+      } catch (error) {
+        console.warn("Icon sprite konnte nicht geladen werden", error);
+        iconSpriteAvailable = false;
+        return false;
+      }
+    })();
+    return iconSpritePromise;
+  }
+
+  function resolveIconHref(iconId) {
+    if (!iconId) return null;
+    return iconId.startsWith("#") ? iconId : `#${iconId}`;
+  }
+
   const RUNTIME_CONFIG = await loadRuntimeConfig();
   console.info("Loaded runtime config from:", RUNTIME_CONFIG.__configSource || "unknown", RUNTIME_CONFIG);
   applyRuntimeConfig(RUNTIME_CONFIG);
+
+  await ensureIconSpriteLoaded();
 
   const mapContainer = document.getElementById("map");
   const detailPanel = document.getElementById("detail-panel");
@@ -471,13 +513,18 @@
         openDetailPanel(d, countryConfig);
       });
 
-    entered.append("circle").attr("class", "point-ring").attr("r", 16);
-    entered.append("circle").attr("class", "point-core").attr("r", 10);
+    entered.append("circle").attr("class", "point-ring").attr("r", 30);
+    entered.append("circle").attr("class", "point-core").attr("r", 20);
     entered
-      .append("text")
+      .append("g")
+      .attr("class", "point-glyph")
+      .attr("transform", "scale(0.76)")
+      .append("use")
       .attr("class", "point-icon")
-      .attr("dy", "0.35em")
-      .text((d) => DATA_CONFIG.categories[d.category]?.icon || "•");
+      .attr("x", -12)
+      .attr("y", -12)
+      .attr("width", 24)
+      .attr("height", 24);
     entered.append("title").text((d) => d.title);
 
     const merged = entered.merge(selection);
@@ -489,12 +536,21 @@
       const [px, py] = currentTransform.apply(d.projected);
       const category = DATA_CONFIG.categories[d.category];
       const color = category?.color || "#ffffff";
+      const iconId = d.iconId || category?.iconId;
+      const href = resolveIconHref(iconId);
       d3.select(this)
         .classed("coming-soon", !!d.comingSoon)
         .attr("transform", `translate(${px},${py})`)
         .style("opacity", 1)
         .select("circle.point-core")
         .attr("fill", color);
+
+      const glyph = d3.select(this).select("use.point-icon");
+      if (href && iconSpriteAvailable) {
+        glyph.attr("href", href).attr("xlink:href", href).style("display", null);
+      } else {
+        glyph.attr("href", null).attr("xlink:href", null).style("display", "none");
+      }
     });
 
     highlightSelectedPoint(null);
@@ -624,6 +680,17 @@
       const swatch = document.createElement("span");
       swatch.className = "swatch";
       swatch.style.background = value.color;
+      let iconSvg = null;
+      const iconRef = resolveIconHref(value.iconId);
+      if (iconSpriteAvailable && iconRef) {
+        iconSvg = document.createElementNS(SVG_NS, "svg");
+        iconSvg.setAttribute("class", "legend-icon");
+        iconSvg.setAttribute("viewBox", "0 0 24 24");
+        const use = document.createElementNS(SVG_NS, "use");
+        use.setAttributeNS(null, "href", iconRef);
+        use.setAttributeNS(XLINK_NS, "href", iconRef);
+        iconSvg.appendChild(use);
+      }
       const textWrapper = document.createElement("div");
       const label = document.createElement("strong");
       label.textContent = value.label;
@@ -632,6 +699,9 @@
       textWrapper.appendChild(label);
       textWrapper.appendChild(description);
       item.appendChild(swatch);
+      if (iconSvg) {
+        item.appendChild(iconSvg);
+      }
       item.appendChild(textWrapper);
       legend.appendChild(item);
     });

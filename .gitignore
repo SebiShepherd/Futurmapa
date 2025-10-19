@@ -1,7 +1,9 @@
 # Ignore runtime configuration (local overrides)
 config.json
-assets/favicon.ico
-assets/
+
+# Runtime branding assets (logos, Favicons) bleiben lokal – das SVG-Sprite wird versioniert
+assets/*
+!assets/*.svg
 
 # Node / editor / OS temporary files (optional)
 node_modules/

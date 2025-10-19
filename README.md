@@ -50,6 +50,20 @@ Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelp
 
 * `DATA_CONFIG.categories` steuert Farben, Icons und erläuternde Texte der Legende.
 * Neue Kategorien erscheinen automatisch in Legende, Tooltip und Detailansicht.
+* Über das Feld `iconId` verweist jede Kategorie (oder optional ein einzelner `point`) auf ein `<symbol>` innerhalb von [`assets/icons.svg`](assets/icons.svg).
+
+#### Eigene POI-Icons hinterlegen
+
+Die Marker nutzen ein lokal gebündeltes SVG-Sprite (`assets/icons.svg`), damit die Anwendung offline funktioniert. Jeder Eintrag besitzt eine eindeutige `id`, z. B. `poi-finance`.
+
+So fügst du neue Symbole hinzu:
+
+1. Öffne `assets/icons.svg` und ergänze ein neues `<symbol>`-Element mit `viewBox="0 0 24 24"`. Als Basis kannst du Open-Source-Bibliotheken wie [Heroicons](https://github.com/tailwindlabs/heroicons) oder [Material Symbols](https://github.com/google/material-design-icons) verwenden. Die Pfade werden direkt als `<path>`-Elemente eingefügt.
+2. Vergib eine eindeutige `id`, zum Beispiel `poi-supply-chain`.
+3. Hinterlege diese `id` in `scripts/data.js`:
+   * entweder als Standard pro Kategorie (`iconId: "poi-supply-chain"`),
+   * oder spezifisch pro Datenpunkt (`{ ..., iconId: "poi-supply-chain" }`).
+4. Lade die Seite neu – Marker und Legende ziehen das Symbol automatisch aus dem Sprite. Icons werden innerhalb der Marker weiß eingefärbt; passe bei Bedarf die Größe über das `transform="scale(...)"` im Marker-Rendering (`scripts/app.js`) an.
 
 Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
 

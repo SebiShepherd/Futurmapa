@@ -4,25 +4,25 @@ const DATA_CONFIG = {
   categories: {
     Finance: {
       label: "Finance",
-      icon: "💰",
+      iconId: "poi-finance",
       color: "#f6bd60",
       description: "Ertragslage, Profitabilität und Investitionen."
     },
     HR: {
       label: "Human Resources",
-      icon: "👥",
+      iconId: "poi-hr",
       color: "#84a59d",
       description: "Mitarbeiterzahlen, Bindung und Lernprogramme."
     },
     Sales: {
       label: "Sales",
-      icon: "📈",
+      iconId: "poi-sales",
       color: "#f28482",
       description: "Pipeline, Auftragseingang und regionale Performance."
     },
     Operations: {
       label: "Operations",
-      icon: "⚙️",
+      iconId: "poi-operations",
       color: "#9d5df0",
       description: "Lieferfähigkeit, Servicequalität und Digitalisierung."
     }

@@ -102,7 +102,7 @@ Verfügbare Keys (kurz):
 - `companyName` – optional, wird verwendet, um den Tab-Titel (document.title) zu bilden, falls `documentTitle` fehlt.
 - `documentTitle` – vollständiger Titel für den Browser-Tab.
 - `favicon` – Pfad zur Favicon-Datei (z. B. `assets/favicon.ico`).
-- `logo` – Pfad zur Logo-Datei, die in der Sidebar angezeigt wird (z. B. `assets/logo.png`).
+- `logo` – Pfad zur Logo-Datei, die im Map-Header neben den Chips angezeigt wird (z. B. `assets/logo.png`).
 - `siteTitle` – Überschrift im Sidebar-Header (ersetzt Standardtext).
 - `subtitle` – Untertitel/Short-Description unter dem Site-Title.
 

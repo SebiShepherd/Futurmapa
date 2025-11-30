@@ -35,7 +35,7 @@ Eine interaktive, vollständig statische Weltkarte zum Visualisieren konzernweit
 ## Datenpflege
 
 Die Datei [`scripts/data.js`](scripts/data.js) ist der zentrale Dreh- und Angelpunkt für Inhalte.
-Für Offline-Pflege und Datenaustausch steht zusätzlich die Arbeitsmappe [`data/data-source.xlsx`](data/data-source.xlsx) zur Verfügung; die zugehörige Feldbeschreibung findest du in [`data/data-schema.md`](data/data-schema.md).
+Für Offline-Pflege und Datenaustausch steht zusätzlich die Arbeitsmappe [`data/data-source.xlsx`](data/data-source.xlsx) zur Verfügung; die zugehörige Feldbeschreibung findet sich in [`data/data-schema.md`](data/data-schema.md).
 
 ### Kontinente & Länder
 
@@ -47,7 +47,7 @@ Für Offline-Pflege und Datenaustausch steht zusätzlich die Arbeitsmappe [`data
 
 * Für die Bereiche `Group`, `CVS`, `RVS` und `CVS_vs_RVS` können individuelle Inhalte (`title`, `metrics`, `visual`, `note`) gepflegt werden.
 * Fehlende Angaben werden automatisch als „Kein Datensatz verfügbar" gekennzeichnet.
-* Setze `comingSoon: true`, um Marker als in Vorbereitung zu markieren.
+* Für Marker in Vorbereitung `comingSoon: true` setzen.
 
 ### Kategorien erweitern
 
@@ -59,14 +59,14 @@ Für Offline-Pflege und Datenaustausch steht zusätzlich die Arbeitsmappe [`data
 
 Die Marker nutzen ein lokal gebündeltes SVG-Sprite (`assets/icons.svg`), damit die Anwendung offline funktioniert. Jeder Eintrag besitzt eine eindeutige `id`, z. B. `poi-finance`.
 
-So fügst du neue Symbole hinzu:
+Hinzufügen neuer Symbole:
 
-1. Öffne `assets/icons.svg` und ergänze ein neues `<symbol>`-Element mit `viewBox="0 0 24 24"`. Als Basis kannst du Open-Source-Bibliotheken wie [Heroicons](https://github.com/tailwindlabs/heroicons) oder [Material Symbols](https://github.com/google/material-design-icons) verwenden. Die Pfade werden direkt als `<path>`-Elemente eingefügt.
-2. Vergib eine eindeutige `id`, zum Beispiel `poi-supply-chain`.
-3. Hinterlege diese `id` in `scripts/data.js`:
+1. `assets/icons.svg` öffnen und ein neues `<symbol>`-Element mit `viewBox="0 0 24 24"` ergänzen. Als Basis können Open-Source-Bibliotheken wie [Heroicons](https://github.com/tailwindlabs/heroicons) oder [Material Symbols](https://github.com/google/material-design-icons) dienen; die Pfade werden direkt als `<path>`-Elemente eingefügt.
+2. Eine eindeutige `id` vergeben, zum Beispiel `poi-supply-chain`.
+3. Diese `id` in `scripts/data.js` hinterlegen:
    * entweder als Standard pro Kategorie (`iconId: "poi-supply-chain"`),
    * oder spezifisch pro Datenpunkt (`{ ..., iconId: "poi-supply-chain" }`).
-4. Lade die Seite neu – Marker und Legende ziehen das Symbol automatisch aus dem Sprite. Icons werden innerhalb der Marker weiß eingefärbt; passe bei Bedarf die Größe über das `transform="scale(...)"` im Marker-Rendering (`scripts/app.js`) an.
+4. Seite neu laden – Marker und Legende ziehen das Symbol automatisch aus dem Sprite. Icons werden innerhalb der Marker weiß eingefärbt; bei Bedarf die Größe über das `transform="scale(...)"` im Marker-Rendering (`scripts/app.js`) anpassen.
 
 Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
 
@@ -80,7 +80,7 @@ Nach jeder Änderung genügt ein Neuladen der geöffneten `index.html`.
 
 Die Bereitstellung erfolgt automatisch über GitHub Actions, sobald Änderungen auf `main` landen oder der Workflow manuell angestoßen wird.
 
-1. Aktiviere in den Repository-Einstellungen unter **Settings → Pages** die Option **Build and deployment → Source → GitHub Actions**.
+1. In den Repository-Einstellungen unter **Settings → Pages** die Option **Build and deployment → Source → GitHub Actions** aktivieren.
 2. Nach erfolgreicher Ausführung des Workflows steht die Seite unter der in den Pages-Einstellungen angegebenen URL bereit.
 
 > ℹ️ Der Workflow lädt das komplette Repository (inklusive `index.html`, `styles.css`, `scripts/`, `data/`, `vendor/`) als statisches Artefakt hoch. Zusätzliche Build-Schritte sind nicht nötig.
@@ -93,7 +93,7 @@ Die Bereitstellung erfolgt automatisch über GitHub Actions, sobald Änderungen 
 
 ## Runtime-Konfiguration & Branding (Logo, Favicon, Titel)
 
-Dieses Projekt unterstützt eine einfache, git-ignorierte Laufzeitkonfiguration, mit der du Logo, Favicon, Site-Title und Dokumententitel ohne Codeänderung anpassen kannst.
+Dieses Projekt unterstützt eine einfache, git-ignorierte Laufzeitkonfiguration, mit der sich Logo, Favicon, Site-Title und Dokumententitel ohne Codeänderung anpassen lassen.
 
 Wichtiges Konzept:
 
@@ -130,7 +130,7 @@ Wie die Anwendung die Konfiguration lädt
 
 Lokale Erstellung von `config.json`
 
-1. Lege im Projekt-Root eine Datei `config.json` an (diese Datei wird nicht committed):
+1. Im Projekt-Root eine Datei `config.json` anlegen (diese Datei wird nicht committed):
 
 ```json
 {
@@ -143,21 +143,21 @@ Lokale Erstellung von `config.json`
 }
 ```
 
-2. Lege die referenzierten Assets unter `assets/` ab (z. B. `assets/my-logo.png`, `assets/my-favicon.ico`).
+2. Die referenzierten Assets unter `assets/` ablegen (z. B. `assets/my-logo.png`, `assets/my-favicon.ico`).
 
-3. Lade die Seite neu. In den Developer-Tools (Konsole) sollte unmittelbar beim Laden eine Meldung erscheinen, z. B.: `Loaded runtime config from: config.json {...}`.
+3. Seite neu laden. In den Developer-Tools (Konsole) erscheint unmittelbar beim Laden eine Meldung, z. B.: `Loaded runtime config from: config.json {...}`.
 
 Hinweise zum Favicon
 
 - Das Script entfernt vorhandene `<link rel="icon">` / `<link rel="shortcut icon">`-Tags und fügt neue Links hinzu (inkl. `?v=<timestamp>`), damit der Browser das neue Icon lädt.
-- Browser oder Webserver können trotzdem ein Root-`/favicon.ico` bevorzugen oder cachen. Wenn du Probleme hast, empfehle ich:
+- Browser oder Webserver können trotzdem ein Root-`/favicon.ico` bevorzugen oder cachen. Bei Problemen helfen folgende Schritte:
   - Hard-Reload (Strg+F5) oder Inkognito-Fenster.
   - Lokalen Server verwenden (siehe unten) statt Datei-Öffnen per file://.
-  - Falls im Projekt-Root eine `favicon.ico` liegt und du ausschließlich `assets/`-Favicon verwenden willst, entferne die Root-`favicon.ico`.
+  - Falls im Projekt-Root eine `favicon.ico` liegt und ausschließlich `assets/`-Favicons verwendet werden sollen, die Root-`favicon.ico` entfernen.
 
 Troubleshooting / Häufige Probleme
 
-- SyntaxError: "Identifier 'RUNTIME_CONFIG' has already been declared" — trat auf, wenn das runtime-config-Block versehentlich doppelt in `scripts/app.js` war; das ist jetzt behoben. Falls du noch einen ähnlichen Fehler siehst, prüfe, ob mehrere Kopien desselben Scripts geladen werden.
+- SyntaxError: "Identifier 'RUNTIME_CONFIG' has already been declared" — trat auf, wenn das runtime-config-Block versehentlich doppelt in `scripts/app.js` war; das ist jetzt behoben. Falls ein ähnlicher Fehler erneut auftritt, prüfen, ob mehrere Kopien desselben Scripts geladen werden.
 - config.json wird nicht geladen / es fällt auf `config.example.json` zurück:
   - Mögliche Ursachen: Seite über `file://` geöffnet (fetch blockiert), Tippfehler im Dateinamen, JSON-Syntaxfehler (Kommentare sind toleriert, aber nicht jede Abweichung).
   - Lösung: Seite über lokalen HTTP-Server ausliefern (s. unten) und Konsole prüfen.
@@ -166,7 +166,7 @@ Troubleshooting / Häufige Probleme
 
 Testing / Lokaler Server (empfohlen)
 
-- Viele Browser blockieren fetch in `file://`-Kontexten oder verhalten sich inkonsistent. Starte daher einen einfachen lokalen Server im Projekt-Root:
+- Viele Browser blockieren fetch in `file://`-Kontexten oder verhalten sich inkonsistent. Daher einen einfachen lokalen Server im Projekt-Root starten:
 
 Wenn Python installiert ist (Windows cmd.exe):
 
@@ -178,7 +178,7 @@ Dann im Browser öffnen: `http://localhost:8000/`.
 
 Konsole prüfen
 
-- Öffne DevTools (F12) → Konsole und suche nach der Info-Zeile:
+- DevTools (F12) → Konsole öffnen und nach der Info-Zeile suchen:
   `Loaded runtime config from: config.json {...}`
 - Oder liste die gesetzten Favicons:
 

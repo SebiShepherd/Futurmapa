@@ -190,10 +190,3 @@ Sicherheit & Best Practices
 
 - `config.json` ist absichtlich in `.gitignore` (lokale, nicht-committete Anpassungen).
 - Speichere keine sensiblen Zugangsdaten oder Geheimnisse in `config.json`. Diese Konfiguration ist für statische Branding-Werte gedacht (Name, Logo, Favicon, Titel, Texte).
-
-Next steps / Optionen
-
-- Wenn du möchtest, baue ich eine kleine Admin-UI (ein einfaches HTML-Formular), die `config.json` lokal erzeugt und zum Download anbietet.
-- Alternativ kann ich ein Node-/npm-Skript bereitstellen, das aus Umgebungsvariablen eine `config.json` generiert (nützlich für CI/CD).
-
-Wenn du willst, übernehme ich das Löschen/Anpassen der Root-`favicon.ico` direkt im Repo (nur nach deiner Bestätigung).

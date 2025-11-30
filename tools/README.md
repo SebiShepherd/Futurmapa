@@ -47,7 +47,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git commit -am "Update data.js" || echo "Keine Änderungen"
+          git add scripts/data.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update data.js" && git push)
 ```
 
 ### Cronjob / Automatisierung auf eigenem Server

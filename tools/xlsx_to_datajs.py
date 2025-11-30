@@ -535,7 +535,7 @@ def ensure_org_blocks_complete(
     for point in points.values():
         available = set(point.org_blocks.keys())
         missing = expected - available
-        if missing:
+        if missing and not point.coming_soon:
             errors.append(
                 f"Marker '{point.point_id}' hat fehlende Organisationsdaten für: {', '.join(sorted(missing))}"
             )
